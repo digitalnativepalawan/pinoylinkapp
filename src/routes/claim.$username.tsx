@@ -5,7 +5,7 @@ import {
   ChevronRight, Check, Copy, Eye, Share2, Rocket, ArrowLeft,
   Globe, QrCode, X, Plus, Trash2,
 } from "lucide-react";
-import { PhoneFrame } from "../index";
+import { PhoneFrame } from "./index";
 
 type LinkItem = { id: string; icon: React.ComponentType<{ className?: string }>; label: string; url: string; color: string };
 
