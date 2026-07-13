@@ -67,7 +67,10 @@ export default function PatrioticPinoyTemplate({ profile, links, onLinkClick }: 
       <div className="absolute inset-0" style={{ background: NAVY }} />
       <div
         className="absolute inset-y-0 right-0 w-3/4"
-        style={{ background: RED, clipPath: "polygon(30% 0, 100% 0, 100% 100%, 100% 100%, 0 100%)" }}
+        style={{
+          background: RED,
+          clipPath: "polygon(30% 0, 100% 0, 100% 100%, 100% 100%, 0 100%)",
+        }}
       />
       {/* White triangle from left */}
       <div
@@ -92,7 +95,13 @@ export default function PatrioticPinoyTemplate({ profile, links, onLinkClick }: 
       </div>
 
       {/* Dark overlay for content readability */}
-      <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 0%, rgba(0,0,60,0.6) 55%, rgba(0,0,60,0.85) 100%)" }} />
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(180deg, transparent 0%, rgba(0,0,60,0.6) 55%, rgba(0,0,60,0.85) 100%)",
+        }}
+      />
 
       <div className="relative mx-auto max-w-md px-5 pb-16 pt-14">
         <div className="mx-auto flex flex-col items-center">
@@ -101,9 +110,16 @@ export default function PatrioticPinoyTemplate({ profile, links, onLinkClick }: 
             style={{ borderColor: YELLOW, background: NAVY }}
           >
             {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt={profile.display_name} className="h-full w-full object-cover" />
+              <img
+                src={profile.avatar_url}
+                alt={profile.display_name}
+                className="h-full w-full object-cover"
+              />
             ) : (
-              <div className="h-full w-full" style={{ background: "linear-gradient(135deg, #fcd34d, #f59e0b)" }} />
+              <div
+                className="h-full w-full"
+                style={{ background: "linear-gradient(135deg, #fcd34d, #f59e0b)" }}
+              />
             )}
           </div>
 
@@ -124,12 +140,17 @@ export default function PatrioticPinoyTemplate({ profile, links, onLinkClick }: 
           >
             {profile.display_name}
           </h1>
-          <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.4em]" style={{ color: YELLOW }}>
+          <div
+            className="mt-1 text-[10px] font-bold uppercase tracking-[0.4em]"
+            style={{ color: YELLOW }}
+          >
             🇵🇭 Proudly Pinoy
           </div>
 
           {profile.bio && (
-            <p className="mt-4 max-w-xs text-center text-sm leading-relaxed text-white/95">{profile.bio}</p>
+            <p className="mt-4 max-w-xs text-center text-sm leading-relaxed text-white/95">
+              {profile.bio}
+            </p>
           )}
         </div>
 
@@ -149,7 +170,10 @@ export default function PatrioticPinoyTemplate({ profile, links, onLinkClick }: 
                 key={l.id}
                 onClick={() => handle(l.id, l.url)}
                 className={`flex w-full items-center gap-3 rounded-2xl border-2 px-4 py-3.5 text-left shadow-lg transition hover:-translate-y-0.5 ${scheme.text}`}
-                style={{ background: scheme.bg, borderColor: isLight ? `${NAVY}22` : "rgba(255,255,255,0.15)" }}
+                style={{
+                  background: scheme.bg,
+                  borderColor: isLight ? `${NAVY}22` : "rgba(255,255,255,0.15)",
+                }}
               >
                 <div
                   className="grid h-11 w-11 shrink-0 place-items-center rounded-xl"
@@ -158,11 +182,15 @@ export default function PatrioticPinoyTemplate({ profile, links, onLinkClick }: 
                   <Icon className="h-5 w-5" style={{ color: isLight ? NAVY : YELLOW }} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className={`truncate text-sm font-black uppercase tracking-wide ${scheme.text}`}>
+                  <div
+                    className={`truncate text-sm font-black uppercase tracking-wide ${scheme.text}`}
+                  >
                     {l.label}
                   </div>
                   {host && (
-                    <div className={`truncate text-[10px] font-semibold uppercase tracking-widest ${isLight ? `text-[${NAVY}]/60` : "text-white/70"}`}>
+                    <div
+                      className={`truncate text-[10px] font-semibold uppercase tracking-widest ${isLight ? `text-[${NAVY}]/60` : "text-white/70"}`}
+                    >
                       {host}
                     </div>
                   )}

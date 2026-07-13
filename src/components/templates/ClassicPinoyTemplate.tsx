@@ -47,7 +47,10 @@ export default function ClassicPinoyTemplate({ profile, links, onLinkClick }: Te
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden" style={{ background: CREAM, color: NAVY }}>
+    <div
+      className="relative min-h-screen overflow-hidden"
+      style={{ background: CREAM, color: NAVY }}
+    >
       <BanigPattern />
       <div className="pointer-events-none absolute -right-16 -top-14 opacity-90">
         <SunWatermark />
@@ -69,9 +72,16 @@ export default function ClassicPinoyTemplate({ profile, links, onLinkClick }: Te
           >
             <div className="h-full w-full overflow-hidden rounded-full border-[3px] border-white bg-white">
               {profile.avatar_url ? (
-                <img src={profile.avatar_url} alt={profile.display_name} className="h-full w-full object-cover" />
+                <img
+                  src={profile.avatar_url}
+                  alt={profile.display_name}
+                  className="h-full w-full object-cover"
+                />
               ) : (
-                <div className="grid h-full w-full place-items-center text-4xl" style={{ color: NAVY }}>
+                <div
+                  className="grid h-full w-full place-items-center text-4xl"
+                  style={{ color: NAVY }}
+                >
                   ✦
                 </div>
               )}
@@ -88,20 +98,29 @@ export default function ClassicPinoyTemplate({ profile, links, onLinkClick }: Te
 
           <h1
             className="mt-3 text-center text-4xl font-semibold leading-tight"
-            style={{ fontFamily: '"Playfair Display", "Cormorant Garamond", Georgia, serif', color: NAVY }}
+            style={{
+              fontFamily: '"Playfair Display", "Cormorant Garamond", Georgia, serif',
+              color: NAVY,
+            }}
           >
             {profile.display_name}
           </h1>
           <div className="mt-1 flex items-center gap-2">
             <span className="h-px w-6" style={{ background: GOLD }} />
-            <span className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: RED }}>
+            <span
+              className="text-[10px] font-bold uppercase tracking-[0.3em]"
+              style={{ color: RED }}
+            >
               Proudly Filipino
             </span>
             <span className="h-px w-6" style={{ background: GOLD }} />
           </div>
 
           {profile.bio && (
-            <p className="mt-4 max-w-xs text-center text-sm leading-relaxed" style={{ color: "#3f3a2f" }}>
+            <p
+              className="mt-4 max-w-xs text-center text-sm leading-relaxed"
+              style={{ color: "#3f3a2f" }}
+            >
               {profile.bio}
             </p>
           )}
@@ -147,7 +166,10 @@ export default function ClassicPinoyTemplate({ profile, links, onLinkClick }: Te
 
         <div className="mt-10 text-center">
           <div className="mx-auto h-px w-16" style={{ background: GOLD }} />
-          <div className="mt-3 text-[10px] font-semibold uppercase tracking-[0.35em]" style={{ color: NAVY }}>
+          <div
+            className="mt-3 text-[10px] font-semibold uppercase tracking-[0.35em]"
+            style={{ color: NAVY }}
+          >
             🇵🇭 katwa.link
           </div>
         </div>

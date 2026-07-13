@@ -21,11 +21,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { getIcon, ICON_OPTIONS, type IconName } from "@/lib/icons";
-import {
-  TEMPLATES,
-  TemplatePhonePreview,
-  renderTemplate,
-} from "@/components/templates";
+import { TEMPLATES, TemplatePhonePreview, renderTemplate } from "@/components/templates";
 
 type Profile = {
   id: string;

@@ -52,8 +52,7 @@ export default function ResortTemplate({ profile, links, onLinkClick }: Template
     <div
       className="relative min-h-screen overflow-hidden text-white"
       style={{
-        background:
-          "linear-gradient(180deg, #7dd3fc 0%, #38bdf8 30%, #0284c7 65%, #0f766e 100%)",
+        background: "linear-gradient(180deg, #7dd3fc 0%, #38bdf8 30%, #0284c7 65%, #0f766e 100%)",
       }}
     >
       {/* Sun */}
@@ -106,7 +105,9 @@ export default function ResortTemplate({ profile, links, onLinkClick }: Template
             {profile.display_name}
           </h1>
           {profile.bio && (
-            <p className="mt-3 max-w-xs text-center text-sm leading-relaxed text-white/90">{profile.bio}</p>
+            <p className="mt-3 max-w-xs text-center text-sm leading-relaxed text-white/90">
+              {profile.bio}
+            </p>
           )}
         </div>
 

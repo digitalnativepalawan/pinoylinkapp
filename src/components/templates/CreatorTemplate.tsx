@@ -12,7 +12,12 @@ function Starfield() {
     o: ((i % 7) + 3) / 10,
   }));
   return (
-    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden>
+    <svg
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      className="absolute inset-0 h-full w-full"
+      aria-hidden
+    >
       {stars.map((s, i) => (
         <circle key={i} cx={s.cx} cy={s.cy} r={s.r} fill="#fff" opacity={s.o} />
       ))}
@@ -30,8 +35,7 @@ export default function CreatorTemplate({ profile, links, onLinkClick }: Templat
     <div
       className="relative min-h-screen overflow-hidden text-white"
       style={{
-        background:
-          "radial-gradient(120% 80% at 50% 0%, #4b1264 0%, #2a1055 45%, #0d0824 100%)",
+        background: "radial-gradient(120% 80% at 50% 0%, #4b1264 0%, #2a1055 45%, #0d0824 100%)",
       }}
     >
       <Starfield />
@@ -49,11 +53,17 @@ export default function CreatorTemplate({ profile, links, onLinkClick }: Templat
         <div className="mx-auto flex flex-col items-center">
           <div
             className="relative h-32 w-32 rounded-full p-[3px]"
-            style={{ background: `conic-gradient(from 180deg, ${GOLD}, #ec4899, #8b5cf6, ${GOLD})` }}
+            style={{
+              background: `conic-gradient(from 180deg, ${GOLD}, #ec4899, #8b5cf6, ${GOLD})`,
+            }}
           >
             <div className="h-full w-full overflow-hidden rounded-full border-4 border-[#150a30] bg-[#150a30]">
               {profile.avatar_url ? (
-                <img src={profile.avatar_url} alt={profile.display_name} className="h-full w-full object-cover" />
+                <img
+                  src={profile.avatar_url}
+                  alt={profile.display_name}
+                  className="h-full w-full object-cover"
+                />
               ) : (
                 <div
                   className="h-full w-full"
@@ -63,9 +73,7 @@ export default function CreatorTemplate({ profile, links, onLinkClick }: Templat
             </div>
           </div>
 
-          <div
-            className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider backdrop-blur"
-          >
+          <div className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider backdrop-blur">
             <span
               className="h-1.5 w-1.5 rounded-full"
               style={{ background: profile.status === "online" ? "#34d399" : "#a1a1aa" }}
@@ -78,7 +86,9 @@ export default function CreatorTemplate({ profile, links, onLinkClick }: Templat
             <BadgeCheck className="h-6 w-6" style={{ color: "#38bdf8" }} />
           </h1>
           {profile.bio && (
-            <p className="mt-3 max-w-xs text-center text-sm leading-relaxed text-white/80">{profile.bio}</p>
+            <p className="mt-3 max-w-xs text-center text-sm leading-relaxed text-white/80">
+              {profile.bio}
+            </p>
           )}
         </div>
 
@@ -86,8 +96,7 @@ export default function CreatorTemplate({ profile, links, onLinkClick }: Templat
         <div
           className="relative mt-6 h-28 overflow-hidden rounded-2xl border border-white/10"
           style={{
-            background:
-              "linear-gradient(135deg, #ec4899 0%, #8b5cf6 45%, #6366f1 100%)",
+            background: "linear-gradient(135deg, #ec4899 0%, #8b5cf6 45%, #6366f1 100%)",
           }}
         >
           <div

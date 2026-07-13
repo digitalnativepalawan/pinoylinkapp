@@ -269,7 +269,6 @@ export function PhoneFrame({
   );
 }
 
-
 /* ---------- Sections ---------- */
 
 const templates = [

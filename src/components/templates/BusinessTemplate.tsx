@@ -37,8 +37,7 @@ export default function BusinessTemplate({ profile, links, onLinkClick }: Templa
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.08]"
         style={{
-          backgroundImage:
-            "radial-gradient(rgba(201,168,76,0.5) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(rgba(201,168,76,0.5) 1px, transparent 1px)",
           backgroundSize: "24px 24px",
         }}
       />
@@ -97,7 +96,9 @@ export default function BusinessTemplate({ profile, links, onLinkClick }: Templa
             {profile.display_name}
           </h1>
           {profile.bio && (
-            <p className="mt-3 max-w-xs text-center text-sm leading-relaxed text-white/75">{profile.bio}</p>
+            <p className="mt-3 max-w-xs text-center text-sm leading-relaxed text-white/75">
+              {profile.bio}
+            </p>
           )}
         </div>
 

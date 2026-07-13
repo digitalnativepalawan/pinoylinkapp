@@ -32,7 +32,10 @@ export default function SellerTemplate({ profile, links, onLinkClick }: Template
   return (
     <div
       className="relative min-h-screen overflow-hidden"
-      style={{ background: `linear-gradient(180deg, #ffe9b8 0%, ${CREAM} 45%, #fff 100%)`, color: NAVY }}
+      style={{
+        background: `linear-gradient(180deg, #ffe9b8 0%, ${CREAM} 45%, #fff 100%)`,
+        color: NAVY,
+      }}
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-30"
@@ -78,11 +81,17 @@ export default function SellerTemplate({ profile, links, onLinkClick }: Template
             {profile.status === "online" ? "Open • Fast Reply" : "Away"}
           </div>
 
-          <h1 className="mt-3 text-center text-3xl font-black uppercase tracking-tight" style={{ color: NAVY }}>
+          <h1
+            className="mt-3 text-center text-3xl font-black uppercase tracking-tight"
+            style={{ color: NAVY }}
+          >
             {profile.display_name}
           </h1>
           {profile.bio && (
-            <p className="mt-2 max-w-xs text-center text-sm leading-relaxed" style={{ color: "#4a4a55" }}>
+            <p
+              className="mt-2 max-w-xs text-center text-sm leading-relaxed"
+              style={{ color: "#4a4a55" }}
+            >
               {profile.bio}
             </p>
           )}
@@ -90,8 +99,13 @@ export default function SellerTemplate({ profile, links, onLinkClick }: Template
 
         {/* Featured product card */}
         <div className="mt-6 overflow-hidden rounded-2xl bg-white shadow-lg">
-          <div className="flex items-center justify-between px-4 py-2" style={{ background: AMBER }}>
-            <span className="text-[10px] font-black uppercase tracking-widest text-white">🔥 Best Seller</span>
+          <div
+            className="flex items-center justify-between px-4 py-2"
+            style={{ background: AMBER }}
+          >
+            <span className="text-[10px] font-black uppercase tracking-widest text-white">
+              🔥 Best Seller
+            </span>
             <span className="text-[10px] font-bold text-white/90">Limited stock</span>
           </div>
           <div className="flex items-center gap-3 p-3">
@@ -136,7 +150,9 @@ export default function SellerTemplate({ profile, links, onLinkClick }: Template
                   <Icon className="h-5 w-5" style={{ color: scheme.accent }} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-bold uppercase tracking-wide">{l.label}</div>
+                  <div className="truncate text-sm font-bold uppercase tracking-wide">
+                    {l.label}
+                  </div>
                   {host && <div className={`truncate text-[10px] ${scheme.sub}`}>{host}</div>}
                 </div>
                 <ChevronRight className="h-4 w-4 shrink-0 opacity-70" />
@@ -147,7 +163,10 @@ export default function SellerTemplate({ profile, links, onLinkClick }: Template
 
         {/* Payment strip */}
         <div className="mt-6 rounded-2xl bg-white/70 p-3 shadow-sm backdrop-blur">
-          <div className="text-center text-[10px] font-black uppercase tracking-widest" style={{ color: NAVY }}>
+          <div
+            className="text-center text-[10px] font-black uppercase tracking-widest"
+            style={{ color: NAVY }}
+          >
             💳 We Accept
           </div>
           <div className="mt-2 grid grid-cols-4 gap-1.5">
@@ -163,7 +182,10 @@ export default function SellerTemplate({ profile, links, onLinkClick }: Template
           </div>
         </div>
 
-        <div className="mt-6 text-center text-[10px] font-semibold uppercase tracking-[0.3em]" style={{ color: NAVY }}>
+        <div
+          className="mt-6 text-center text-[10px] font-semibold uppercase tracking-[0.3em]"
+          style={{ color: NAVY }}
+        >
           🛒 katwa.link
         </div>
       </div>
