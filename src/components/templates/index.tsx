@@ -71,7 +71,7 @@ function LocalPhoneFrame({ children }: { children: React.ReactNode }) {
 
 export function PinoyFitnessPhone() {
   return (
-    <PhoneFrame>
+    <LocalPhoneFrame>
       <NewTemplatePhonePreview
         slug="pinoy-fitness"
         props={{
@@ -91,13 +91,13 @@ export function PinoyFitnessPhone() {
           onLinkClick: () => {},
         }}
       />
-    </PhoneFrame>
+    </LocalPhoneFrame>
   );
 }
 
 export function IslaCreatorPhone() {
   return (
-    <PhoneFrame>
+    <LocalPhoneFrame>
       <NewTemplatePhonePreview
         slug="isla-creator"
         props={{
@@ -117,6 +117,6 @@ export function IslaCreatorPhone() {
           onLinkClick: () => {},
         }}
       />
-    </PhoneFrame>
+    </LocalPhoneFrame>
   );
 }
