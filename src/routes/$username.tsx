@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react";
 import { getPublicProfile } from "@/lib/profile.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { getIcon } from "@/lib/icons";
+import { isNewTemplate, renderNewTemplate } from "@/components/templates";
 
 export const Route = createFileRoute("/$username")({
   loader: async ({ params }) => {
