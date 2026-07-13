@@ -485,43 +485,7 @@ function ClaimPage() {
               </Field>
               <Field label="Template">
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {[
-                    {
-                      slug: "classic-pinoy",
-                      label: "Classic Pinoy",
-                      swatch: ["#ffffff", "#ffd23a", "#0038a8", "#cc1f2d"],
-                    },
-                    {
-                      slug: "seller",
-                      label: "Seller",
-                      swatch: ["#fff6e3", "#fb923c", "#ee4d2d", "#10b981"],
-                    },
-                    {
-                      slug: "creator",
-                      label: "Creator",
-                      swatch: ["#1a103d", "#2d1654", "#e1306c", "#ff0000"],
-                    },
-                    {
-                      slug: "business",
-                      label: "Business",
-                      swatch: ["#064e3b", "#0d7a5f", "#f5f0e0", "#c9a84c"],
-                    },
-                    {
-                      slug: "resort",
-                      label: "Resort",
-                      swatch: ["#38bdf8", "#0369a1", "#5eead4", "#fef3c7"],
-                    },
-                    {
-                      slug: "patriotic-pinoy",
-                      label: "Patriotic Pinoy",
-                      swatch: ["#0038a8", "#cc1f2d", "#ffd23a", "#ffffff"],
-                    },
-                    ...NEW_TEMPLATES.map((t) => ({
-                      slug: t.slug,
-                      label: t.label,
-                      swatch: t.swatch as unknown as string[],
-                    })),
-                  ].map((t) => {
+                  {TEMPLATES.map((t) => {
                     const active = profile.template === t.slug;
                     return (
                       <button
