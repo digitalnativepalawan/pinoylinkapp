@@ -56,7 +56,18 @@ export function NewTemplatePhonePreview({ slug, props }: { slug: string; props: 
 }
 
 /** Small standalone phone-frame preview for the landing gallery. */
-import { PhoneFrame } from "@/routes/index";
+function LocalPhoneFrame({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="relative mx-auto w-[260px] shrink-0">
+      <div className="relative rounded-[2.5rem] border-[6px] border-[#0a0a0a] bg-black p-1 shadow-2xl shadow-black/60">
+        <div className="relative overflow-hidden rounded-[2rem] aspect-[9/19.5] text-zinc-900">
+          <div className="absolute left-1/2 top-2 z-20 h-5 w-24 -translate-x-1/2 rounded-full bg-black" />
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function PinoyFitnessPhone() {
   return (
