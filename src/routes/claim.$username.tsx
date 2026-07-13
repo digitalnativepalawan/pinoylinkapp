@@ -18,15 +18,11 @@ import {
   LogOut,
   GripVertical,
 } from "lucide-react";
-import { PhoneFrame } from "./index";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/lib/auth";
 import { getIcon, ICON_OPTIONS, type IconName } from "@/lib/icons";
 import {
-  NEW_TEMPLATES,
-  NewTemplatePhonePreview,
-  isNewTemplate,
-  renderNewTemplate,
+  TEMPLATES,
+  TemplatePhonePreview,
+  renderTemplate,
 } from "@/components/templates";
 
 type Profile = {
