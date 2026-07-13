@@ -31,7 +31,10 @@ function AuthPage() {
       setClaiming(true);
       try {
         const { data: existing } = await supabase
-          .from("profiles").select("username").eq("user_id", user.id).maybeSingle();
+          .from("profiles")
+          .select("username")
+          .eq("user_id", user.id)
+          .maybeSingle();
 
         let dest = next ?? "/";
         if (pendingUsername && !existing) {
@@ -58,10 +61,12 @@ function AuthPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setBusy(true); setErr(null);
+    setBusy(true);
+    setErr(null);
     const redirectTo = `${window.location.origin}/auth${
       next || pendingUsername
-        ? "?" + new URLSearchParams({
+        ? "?" +
+          new URLSearchParams({
             ...(next ? { next } : {}),
             ...(pendingUsername ? { pendingUsername } : {}),
           }).toString()
@@ -84,12 +89,16 @@ function AuthPage() {
   return (
     <div className="grid min-h-screen place-items-center bg-background px-4">
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl">
-        <Link to="/" className="text-xs text-muted-foreground hover:text-foreground">← Back</Link>
+        <Link to="/" className="text-xs text-muted-foreground hover:text-foreground">
+          ← Back
+        </Link>
         <h1 className="mt-3 text-2xl font-semibold tracking-tight">
           {pendingUsername ? `Claim katwa.link/${pendingUsername}` : "Sign in"}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {sent ? "Check your email for the magic link." : "We'll send you a magic link — no password."}
+          {sent
+            ? "Check your email for the magic link."
+            : "We'll send you a magic link — no password."}
         </p>
 
         {sent ? (
@@ -101,7 +110,10 @@ function AuthPage() {
             <div className="flex items-center rounded-lg border border-border bg-background px-3">
               <Mail className="h-4 w-4 text-muted-foreground" />
               <input
-                type="email" required autoFocus value={email}
+                type="email"
+                required
+                autoFocus
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@email.com"
                 className="flex-1 bg-transparent px-2 py-2.5 text-sm outline-none"

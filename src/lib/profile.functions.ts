@@ -85,7 +85,11 @@ export const getMyAnalytics = createServerFn({ method: "GET" })
     let topLink: { label: string; clicks: number } | null = null;
     if (clickCounts.size > 0) {
       const [topId, topCount] = [...clickCounts.entries()].sort((a, b) => b[1] - a[1])[0];
-      const { data: link } = await supabase.from("links").select("label").eq("id", topId).maybeSingle();
+      const { data: link } = await supabase
+        .from("links")
+        .select("label")
+        .eq("id", topId)
+        .maybeSingle();
       if (link) topLink = { label: link.label, clicks: topCount };
     }
 
@@ -96,7 +100,10 @@ export const getMyAnalytics = createServerFn({ method: "GET" })
       const { data: linkRows } = await supabase
         .from("links")
         .select("id, label, icon")
-        .in("id", topLinkIds.map(([id]) => id));
+        .in(
+          "id",
+          topLinkIds.map(([id]) => id),
+        );
       for (const [id, clicks] of topLinkIds) {
         const l = linkRows?.find((r) => r.id === id);
         if (l) topLinks.push({ id, label: l.label, icon: l.icon, clicks });
