@@ -18,6 +18,8 @@ import {
   LogOut,
   GripVertical,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
 import { getIcon, ICON_OPTIONS, type IconName } from "@/lib/icons";
 import {
   TEMPLATES,
