@@ -403,7 +403,25 @@ function ClaimPage() {
               {links.map((l) => {
                 const Icon = getIcon(l.icon);
                 return (
-                  <li key={l.id} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-lg border border-border bg-background p-3">
+                  <li
+                    key={l.id}
+                    draggable
+                    onDragStart={(e) => { setDragId(l.id); e.dataTransfer.effectAllowed = "move"; }}
+                    onDragOver={(e) => { e.preventDefault(); if (dragOverId !== l.id) setDragOverId(l.id); }}
+                    onDragLeave={() => { if (dragOverId === l.id) setDragOverId(null); }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      if (dragId) reorderLinks(dragId, l.id);
+                      setDragId(null); setDragOverId(null);
+                    }}
+                    onDragEnd={() => { setDragId(null); setDragOverId(null); }}
+                    className={`grid grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-2 rounded-lg border bg-background p-3 ${
+                      dragOverId === l.id && dragId && dragId !== l.id ? "border-primary" : "border-border"
+                    } ${dragId === l.id ? "opacity-50" : ""}`}
+                  >
+                    <span className="cursor-grab text-muted-foreground active:cursor-grabbing" aria-label="Drag to reorder">
+                      <GripVertical className="h-4 w-4" />
+                    </span>
                     <select
                       value={(l.icon ?? "Globe") as IconName}
                       onChange={(e) => patchLink(l.id, { icon: e.target.value })}
