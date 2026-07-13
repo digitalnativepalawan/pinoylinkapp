@@ -539,12 +539,47 @@ function FeaturesSection() {
 }
 
 function DashboardSection() {
+  const { user } = useAuth();
+  const fetchAnalytics = useServerFn(getMyAnalytics);
+  const { data, isLoading } = useQuery({
+    queryKey: ["my-analytics", user?.id],
+    queryFn: () => fetchAnalytics(),
+    enabled: !!user,
+    staleTime: 60_000,
+  });
+
+  const stats = data
+    ? [
+        ["Profile Views", data.pageViews.toLocaleString(), null],
+        ["Link Clicks", data.linkClicks.toLocaleString(), null],
+        ["Click Through Rate", `${data.ctr}%`, null],
+        ["Top Link", data.topLink?.label ?? "—", data.topLink ? `${data.topLink.clicks} clicks` : null],
+      ]
+    : [
+        ["Profile Views", "—", null],
+        ["Link Clicks", "—", null],
+        ["Click Through Rate", "—", null],
+        ["Top Link", "—", null],
+      ];
+
+  const series = data?.series7d ?? [];
+  const maxV = Math.max(1, ...series.map((d) => d.views));
+  const points = series.map((d, i) => {
+    const x = (i / Math.max(1, series.length - 1)) * 300;
+    const y = 110 - (d.views / maxV) * 90;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+  const linePath = points.length ? `M${points.join(" L")}` : "";
+  const areaPath = points.length ? `M0,120 L${points.join(" L")} L300,120 Z` : "";
+
   return (
     <section id="dashboard" className="relative border-t border-border/50 py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="text-center">
           <h2 className="text-3xl font-extrabold tracking-tight sm:text-5xl">Your dashboard, your data.</h2>
-          <p className="mt-3 text-muted-foreground">Track every click and grow your reach.</p>
+          <p className="mt-3 text-muted-foreground">
+            {user ? "Real clicks from your live page." : "Track every click and grow your reach."}
+          </p>
         </div>
 
         <div className="mt-12 overflow-hidden rounded-2xl border border-border bg-background shadow-2xl">
@@ -574,20 +609,26 @@ function DashboardSection() {
             <div className="p-6 sm:p-8">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold">Overview</h3>
-                <div className="rounded-lg border border-border px-3 py-1.5 text-xs text-muted-foreground">Last 7 Days ▾</div>
+                <div className="rounded-lg border border-border px-3 py-1.5 text-xs text-muted-foreground">Last 7 Days</div>
               </div>
 
+              {!user && (
+                <div className="mt-4 rounded-lg border border-dashed border-border bg-card/40 p-4 text-center text-sm text-muted-foreground">
+                  Sign in and publish your page to see live analytics here.
+                </div>
+              )}
+              {user && !data && !isLoading && (
+                <div className="mt-4 rounded-lg border border-dashed border-border bg-card/40 p-4 text-center text-sm text-muted-foreground">
+                  Publish your page and share it to start collecting clicks.
+                </div>
+              )}
+
               <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {[
-                  ["Profile Views", "12,458", "+18.6%"],
-                  ["Link Clicks", "8,246", "+21.3%"],
-                  ["Click Through Rate", "66.1%", "+9.2%"],
-                  ["Top Source", "TikTok", "+31.4%"],
-                ].map(([label, val, delta]) => (
-                  <div key={label} className="rounded-xl border border-border bg-card/50 p-4">
+                {stats.map(([label, val, sub]) => (
+                  <div key={label as string} className="rounded-xl border border-border bg-card/50 p-4">
                     <div className="text-xs text-muted-foreground">{label}</div>
-                    <div className="mt-1 text-2xl font-extrabold tracking-tight">{val}</div>
-                    <div className="mt-1 text-xs text-emerald-400">↑ {delta}</div>
+                    <div className="mt-1 truncate text-2xl font-extrabold tracking-tight">{val}</div>
+                    {sub && <div className="mt-1 text-xs text-muted-foreground">{sub}</div>}
                   </div>
                 ))}
               </div>
@@ -599,31 +640,30 @@ function DashboardSection() {
                     <span className="text-xs text-muted-foreground">Clicks</span>
                   </div>
                   <ul className="mt-3 space-y-3 text-sm">
-                    {[
-                      [MessageCircle, "Message us on Facebook", "2,984"],
-                      [MessageCircle, "Chat on WhatsApp", "2,341"],
-                      [ShoppingBag, "Shopee Store", "1,812"],
-                      [Music2, "TikTok Shop", "1,109"],
-                    ].map(([I, n, c]) => {
-                      const Icon = I as typeof MessageCircle;
+                    {(data?.topLinks ?? []).map((tl) => {
+                      const Icon = getIcon(tl.icon);
+                      const maxC = data!.topLinks[0]?.clicks || 1;
                       return (
-                        <li key={n as string} className="flex items-center gap-3">
+                        <li key={tl.id} className="flex items-center gap-3">
                           <Icon className="h-4 w-4 text-muted-foreground" />
-                          <span className="flex-1 truncate">{n as string}</span>
+                          <span className="flex-1 truncate">{tl.label}</span>
                           <div className="h-1.5 w-24 overflow-hidden rounded-full bg-muted">
-                            <div className="h-full bg-primary" style={{ width: "70%" }} />
+                            <div className="h-full bg-primary" style={{ width: `${(tl.clicks / maxC) * 100}%` }} />
                           </div>
-                          <span className="w-12 text-right font-semibold">{c as string}</span>
+                          <span className="w-12 text-right font-semibold">{tl.clicks}</span>
                         </li>
                       );
                     })}
+                    {(!data?.topLinks?.length) && (
+                      <li className="text-xs text-muted-foreground">No link clicks yet.</li>
+                    )}
                   </ul>
                 </div>
 
                 <div className="rounded-xl border border-border bg-card/50 p-5">
                   <div className="flex items-center justify-between">
                     <h4 className="text-sm font-semibold">Views Over Time</h4>
-                    <span className="text-xs text-muted-foreground">2,458 on May 14</span>
+                    <span className="text-xs text-muted-foreground">Last 7 days</span>
                   </div>
                   <svg viewBox="0 0 300 120" className="mt-3 h-32 w-full">
                     <defs>
@@ -632,8 +672,11 @@ function DashboardSection() {
                         <stop offset="100%" stopColor="oklch(0.62 0.22 265)" stopOpacity="0" />
                       </linearGradient>
                     </defs>
-                    <path d="M0,90 C40,80 60,70 90,65 C130,58 160,55 190,40 C220,28 250,25 300,15 L300,120 L0,120 Z" fill="url(#g)" />
-                    <path d="M0,90 C40,80 60,70 90,65 C130,58 160,55 190,40 C220,28 250,25 300,15" fill="none" stroke="oklch(0.62 0.22 265)" strokeWidth="2" />
+                    {areaPath && <path d={areaPath} fill="url(#g)" />}
+                    {linePath && <path d={linePath} fill="none" stroke="oklch(0.62 0.22 265)" strokeWidth="2" />}
+                    {!linePath && (
+                      <path d="M0,90 C40,80 60,70 90,65 C130,58 160,55 190,40 C220,28 250,25 300,15" fill="none" stroke="oklch(0.62 0.22 265)" strokeWidth="2" strokeOpacity="0.3" />
+                    )}
                   </svg>
                 </div>
               </div>
