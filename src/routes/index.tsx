@@ -408,6 +408,8 @@ const templates = [
   { Comp: BusinessPhone, name: "BUSINESS", color: "text-emerald-400", desc: "Great for cafes, restaurants and local shops." },
   { Comp: ResortPhone, name: "RESORT", color: "text-sky-400", desc: "Built for resorts, hotels and travel businesses." },
   { Comp: PatrioticPhone, name: "PATRIOTIC PINOY", color: "text-[#ff6464]", desc: "Show your pride with Philippine colors and sun." },
+  { Comp: PinoyFitnessPhone, name: "PINOY FITNESS", color: "text-[#ffcf2a]", desc: "Bold flag-color design for coaches and athletes." },
+  { Comp: IslaCreatorPhone, name: "ISLA CREATOR", color: "text-[#c92030]", desc: "Warm cream aesthetic for lifestyle creators." },
 ];
 
 function Hero() {
