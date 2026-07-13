@@ -18,16 +18,10 @@ import {
   LogOut,
   GripVertical,
 } from "lucide-react";
-import { PhoneFrame } from "./index";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { getIcon, ICON_OPTIONS, type IconName } from "@/lib/icons";
-import {
-  NEW_TEMPLATES,
-  NewTemplatePhonePreview,
-  isNewTemplate,
-  renderNewTemplate,
-} from "@/components/templates";
+import { TEMPLATES, TemplatePhonePreview, renderTemplate } from "@/components/templates";
 
 type Profile = {
   id: string;
@@ -487,43 +481,7 @@ function ClaimPage() {
               </Field>
               <Field label="Template">
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {[
-                    {
-                      slug: "classic-pinoy",
-                      label: "Classic Pinoy",
-                      swatch: ["#ffffff", "#ffd23a", "#0038a8", "#cc1f2d"],
-                    },
-                    {
-                      slug: "seller",
-                      label: "Seller",
-                      swatch: ["#fff6e3", "#fb923c", "#ee4d2d", "#10b981"],
-                    },
-                    {
-                      slug: "creator",
-                      label: "Creator",
-                      swatch: ["#1a103d", "#2d1654", "#e1306c", "#ff0000"],
-                    },
-                    {
-                      slug: "business",
-                      label: "Business",
-                      swatch: ["#064e3b", "#0d7a5f", "#f5f0e0", "#c9a84c"],
-                    },
-                    {
-                      slug: "resort",
-                      label: "Resort",
-                      swatch: ["#38bdf8", "#0369a1", "#5eead4", "#fef3c7"],
-                    },
-                    {
-                      slug: "patriotic-pinoy",
-                      label: "Patriotic Pinoy",
-                      swatch: ["#0038a8", "#cc1f2d", "#ffd23a", "#ffffff"],
-                    },
-                    ...NEW_TEMPLATES.map((t) => ({
-                      slug: t.slug,
-                      label: t.label,
-                      swatch: t.swatch as unknown as string[],
-                    })),
-                  ].map((t) => {
+                  {TEMPLATES.map((t) => {
                     const active = profile.template === t.slug;
                     return (
                       <button
@@ -702,61 +660,18 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 function MiniPreview({ profile, links }: { profile: Profile; links: LinkRow[] }) {
-  if (isNewTemplate(profile.template)) {
-    return (
-      <PhoneFrame>
-        <NewTemplatePhonePreview
-          slug={profile.template}
-          props={{ profile, links, onLinkClick: () => {} }}
-        />
-      </PhoneFrame>
-    );
-  }
   return (
-    <PhoneFrame>
-      <div className="absolute inset-0 overflow-y-auto bg-gradient-to-b from-pink-50 to-violet-50">
-        <div className="pt-10 px-3 pb-4">
-          <div className="mx-auto h-20 w-20 overflow-hidden rounded-full border-4 border-white bg-gradient-to-br from-pink-200 to-pink-400 shadow-lg">
-            {profile.avatar_url && (
-              <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
-            )}
-          </div>
-          <div className="mt-2 text-center">
-            <div
-              className={`inline-block rounded-full px-2 py-0.5 text-[8px] font-semibold text-white ${profile.status === "online" ? "bg-emerald-500" : "bg-zinc-400"}`}
-            >
-              ● {profile.status === "online" ? "Active now" : "Away"}
-            </div>
-            <h3 className="mt-1 text-sm font-semibold tracking-tight text-zinc-900">
-              {profile.display_name}
-            </h3>
-            <p className="mt-0.5 whitespace-pre-line text-[9px] text-zinc-600">{profile.bio}</p>
-          </div>
-          <div className="mt-3 space-y-1.5">
-            {links.map((l) => {
-              const Icon = getIcon(l.icon);
-              return (
-                <div
-                  key={l.id}
-                  className="flex items-center gap-2.5 rounded-xl bg-white px-2.5 py-2 shadow-sm"
-                >
-                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-zinc-50">
-                    <Icon className={`h-4 w-4 ${l.color || "text-zinc-700"}`} />
-                  </div>
-                  <div className="min-w-0 flex-1 truncate text-[11px] font-semibold leading-tight text-zinc-900">
-                    {l.label}
-                  </div>
-                  <ChevronRight className="h-3 w-3 text-zinc-400" />
-                </div>
-              );
-            })}
-          </div>
-          <div className="mt-3 text-center text-[9px] text-zinc-500">
-            🔗 katwa.link/{profile.username}
-          </div>
+    <div className="relative mx-auto w-[260px] shrink-0">
+      <div className="relative rounded-[2.5rem] border-[6px] border-[#0a0a0a] bg-black p-1 shadow-2xl shadow-black/60">
+        <div className="relative overflow-hidden rounded-[2rem] aspect-[9/19.5] text-zinc-900">
+          <div className="absolute left-1/2 top-2 z-20 h-5 w-24 -translate-x-1/2 rounded-full bg-black" />
+          <TemplatePhonePreview
+            slug={profile.template}
+            props={{ profile, links, onLinkClick: () => {} }}
+          />
         </div>
       </div>
-    </PhoneFrame>
+    </div>
   );
 }
 
@@ -792,15 +707,9 @@ function PreviewMode({
           </button>
         </div>
       </div>
-      {isNewTemplate(profile.template) ? (
-        <div className="mx-auto max-w-md">
-          {renderNewTemplate(profile.template, { profile, links, onLinkClick: () => {} })}
-        </div>
-      ) : (
-        <div className="flex justify-center py-10">
-          <MiniPreview profile={profile} links={links} />
-        </div>
-      )}
+      <div className="mx-auto max-w-md">
+        {renderTemplate(profile.template, { profile, links, onLinkClick: () => {} })}
+      </div>
     </div>
   );
 }
