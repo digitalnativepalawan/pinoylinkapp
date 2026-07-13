@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ChevronRight, Check, Copy, Eye, Share2, Rocket, ArrowLeft,
-  Globe, QrCode, X, Plus, Trash2, Loader2, Upload, LogOut,
+  Globe, QrCode, X, Plus, Trash2, Loader2, Upload, LogOut, GripVertical,
 } from "lucide-react";
 import { PhoneFrame } from "./index";
 import { supabase } from "@/integrations/supabase/client";
@@ -170,6 +170,51 @@ function ClaimPage() {
     }, 400);
     linkTimers.current.set(id, t);
   };
+
+  // Drag and drop reorder — batch-update every row whose position changed
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
+
+  const reorderLinks = async (fromId: string, toId: string) => {
+    if (fromId === toId) return;
+    const fromIdx = links.findIndex((l) => l.id === fromId);
+    const toIdx = links.findIndex((l) => l.id === toId);
+    if (fromIdx < 0 || toIdx < 0) return;
+
+    const next = [...links];
+    const [moved] = next.splice(fromIdx, 1);
+    next.splice(toIdx, 0, moved);
+
+    // Compute rows whose position actually changed and renormalize to 0..n-1
+    const changed = next
+      .map((l, i) => ({ row: l, newPos: i }))
+      .filter(({ row, newPos }) => row.position !== newPos);
+
+    // Optimistic UI: apply normalized positions to every row
+    const optimistic = next.map((l, i) => ({ ...l, position: i }));
+    setLinks(optimistic);
+
+    if (changed.length === 0) return;
+
+    // Batch upsert — one round-trip, updates every affected row
+    const payload = changed.map(({ row, newPos }) => ({
+      id: row.id,
+      profile_id: row.profile_id,
+      label: row.label,
+      url: row.url,
+      icon: row.icon,
+      color: row.color,
+      enabled: row.enabled,
+      position: newPos,
+    }));
+    const { error: upErr } = await supabase.from("links").upsert(payload, { onConflict: "id" });
+    if (upErr) {
+      // Roll back on failure
+      setLinks(links);
+      setError(upErr.message);
+    }
+  };
+
 
   // Avatar upload
   const [uploading, setUploading] = useState(false);
@@ -358,7 +403,25 @@ function ClaimPage() {
               {links.map((l) => {
                 const Icon = getIcon(l.icon);
                 return (
-                  <li key={l.id} className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-lg border border-border bg-background p-3">
+                  <li
+                    key={l.id}
+                    draggable
+                    onDragStart={(e) => { setDragId(l.id); e.dataTransfer.effectAllowed = "move"; }}
+                    onDragOver={(e) => { e.preventDefault(); if (dragOverId !== l.id) setDragOverId(l.id); }}
+                    onDragLeave={() => { if (dragOverId === l.id) setDragOverId(null); }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      if (dragId) reorderLinks(dragId, l.id);
+                      setDragId(null); setDragOverId(null);
+                    }}
+                    onDragEnd={() => { setDragId(null); setDragOverId(null); }}
+                    className={`grid grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-2 rounded-lg border bg-background p-3 ${
+                      dragOverId === l.id && dragId && dragId !== l.id ? "border-primary" : "border-border"
+                    } ${dragId === l.id ? "opacity-50" : ""}`}
+                  >
+                    <span className="cursor-grab text-muted-foreground active:cursor-grabbing" aria-label="Drag to reorder">
+                      <GripVertical className="h-4 w-4" />
+                    </span>
                     <select
                       value={(l.icon ?? "Globe") as IconName}
                       onChange={(e) => patchLink(l.id, { icon: e.target.value })}
