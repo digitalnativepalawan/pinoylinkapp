@@ -587,9 +587,18 @@ function PreviewMode({
           </button>
         </div>
       </div>
-      <div className="flex justify-center py-10">
-        <MiniPreview profile={profile} links={links} />
-      </div>
+      {isNewTemplate(profile.template) ? (
+        <div className="mx-auto max-w-md">
+          {(() => {
+            const { renderNewTemplate } = require("@/components/templates") as typeof import("@/components/templates");
+            return renderNewTemplate(profile.template, { profile, links, onLinkClick: () => {} });
+          })()}
+        </div>
+      ) : (
+        <div className="flex justify-center py-10">
+          <MiniPreview profile={profile} links={links} />
+        </div>
+      )}
     </div>
   );
 }
