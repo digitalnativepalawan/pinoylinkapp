@@ -171,6 +171,51 @@ function ClaimPage() {
     linkTimers.current.set(id, t);
   };
 
+  // Drag and drop reorder — batch-update every row whose position changed
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
+
+  const reorderLinks = async (fromId: string, toId: string) => {
+    if (fromId === toId) return;
+    const fromIdx = links.findIndex((l) => l.id === fromId);
+    const toIdx = links.findIndex((l) => l.id === toId);
+    if (fromIdx < 0 || toIdx < 0) return;
+
+    const next = [...links];
+    const [moved] = next.splice(fromIdx, 1);
+    next.splice(toIdx, 0, moved);
+
+    // Compute rows whose position actually changed and renormalize to 0..n-1
+    const changed = next
+      .map((l, i) => ({ row: l, newPos: i }))
+      .filter(({ row, newPos }) => row.position !== newPos);
+
+    // Optimistic UI: apply normalized positions to every row
+    const optimistic = next.map((l, i) => ({ ...l, position: i }));
+    setLinks(optimistic);
+
+    if (changed.length === 0) return;
+
+    // Batch upsert — one round-trip, updates every affected row
+    const payload = changed.map(({ row, newPos }) => ({
+      id: row.id,
+      profile_id: row.profile_id,
+      label: row.label,
+      url: row.url,
+      icon: row.icon,
+      color: row.color,
+      enabled: row.enabled,
+      position: newPos,
+    }));
+    const { error: upErr } = await supabase.from("links").upsert(payload, { onConflict: "id" });
+    if (upErr) {
+      // Roll back on failure
+      setLinks(links);
+      setError(upErr.message);
+    }
+  };
+
+
   // Avatar upload
   const [uploading, setUploading] = useState(false);
   const onAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
