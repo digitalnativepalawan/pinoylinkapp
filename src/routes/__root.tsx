@@ -88,8 +88,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "link in bio" },
       { name: "twitter:description", content: "Filipino Link in Bio" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/T9Th5uPVO0aXJIb4F3X0QFtM7K13/social-images/social-1782609152863-WhatsApp_Image_2026-06-20_at_4.50.51_PM.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/T9Th5uPVO0aXJIb4F3X0QFtM7K13/social-images/social-1782609152863-WhatsApp_Image_2026-06-20_at_4.50.51_PM.webp" },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/T9Th5uPVO0aXJIb4F3X0QFtM7K13/social-images/social-1782609152863-WhatsApp_Image_2026-06-20_at_4.50.51_PM.webp",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/T9Th5uPVO0aXJIb4F3X0QFtM7K13/social-images/social-1782609152863-WhatsApp_Image_2026-06-20_at_4.50.51_PM.webp",
+      },
     ],
     links: [
       { rel: "preconnect", href: "https://api.fontshare.com" },
