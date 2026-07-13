@@ -109,7 +109,7 @@ function PublicProfile() {
         </div>
 
         <div className="mt-8 space-y-3">
-          {data.links.map((l) => {
+          {data.links.map((l: { id: string; label: string; url: string; icon: string | null; color: string | null }) => {
             const Icon = getIcon(l.icon);
             return (
               <button
