@@ -524,6 +524,16 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 function MiniPreview({ profile, links }: { profile: Profile; links: LinkRow[] }) {
+  if (isNewTemplate(profile.template)) {
+    return (
+      <PhoneFrame>
+        <NewTemplatePhonePreview
+          slug={profile.template}
+          props={{ profile, links, onLinkClick: () => {} }}
+        />
+      </PhoneFrame>
+    );
+  }
   return (
     <PhoneFrame>
       <div className="absolute inset-0 overflow-y-auto bg-gradient-to-b from-pink-50 to-violet-50">
