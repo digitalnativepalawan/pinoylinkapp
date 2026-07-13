@@ -824,7 +824,9 @@ function ShareModal({
     if (navigator.share) {
       try {
         await navigator.share({ title: "My katwa.link", url });
-      } catch {}
+      } catch {
+        /* user cancelled */
+      }
     } else {
       copy();
     }
