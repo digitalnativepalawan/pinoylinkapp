@@ -8,7 +8,7 @@ import { PhoneFrame } from "./index";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { getIcon, ICON_OPTIONS, type IconName } from "@/lib/icons";
-import { NEW_TEMPLATES, NewTemplatePhonePreview, isNewTemplate } from "@/components/templates";
+import { NEW_TEMPLATES, NewTemplatePhonePreview, isNewTemplate, renderNewTemplate } from "@/components/templates";
 
 type Profile = {
   id: string; user_id: string; username: string; display_name: string;
