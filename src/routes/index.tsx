@@ -12,6 +12,7 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { getMyAnalytics } from "@/lib/profile.functions";
 import { getIcon } from "@/lib/icons";
+import { PinoyFitnessPhone, IslaCreatorPhone } from "@/components/templates";
 
 export const Route = createFileRoute("/")({
   head: () => ({
