@@ -3,9 +3,15 @@ import {
   Link2, MessageCircle, ShoppingBag, Music2, Facebook, Instagram,
   Youtube, MapPin, Calendar, Coffee, Briefcase, FileText, Mail,
   Linkedin, BadgeCheck, Sun, QrCode, BarChart3, CreditCard, Store,
-  Check, Sparkles, Phone, ChevronRight, Play, Star,
+  Check, Sparkles, Phone, ChevronRight, Play, Star, LogOut,
 } from "lucide-react";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { useAuth } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
+import { getMyAnalytics } from "@/lib/profile.functions";
+import { getIcon } from "@/lib/icons";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -39,30 +45,77 @@ function Logo({ className = "" }: { className?: string }) {
 
 function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [needEmail, setNeedEmail] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const { user, signInWithOtp } = useAuth();
   const navigate = useNavigate();
-  const submit = (e: React.FormEvent) => {
+  const slug = () => name.trim().toLowerCase().replace(/[^a-z0-9-]/g, "") || "yourname";
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const slug = name.trim().toLowerCase().replace(/[^a-z0-9-]/g, "") || "yourname";
-    navigate({ to: "/claim/$username", params: { username: slug } });
+    const s = slug();
+    if (user) {
+      // Signed in — go straight to editor; claim page creates the row.
+      navigate({ to: "/claim/$username", params: { username: s } });
+      return;
+    }
+    if (!needEmail) { setNeedEmail(true); return; }
+    setBusy(true);
+    const redirectTo = `${window.location.origin}/auth?next=${encodeURIComponent(`/claim/${s}`)}&pendingUsername=${encodeURIComponent(s)}`;
+    const { error } = await signInWithOtp(email.trim(), redirectTo);
+    setBusy(false);
+    if (!error) setSent(true);
   };
+
   const pad = size === "lg" ? "p-2" : "p-1.5";
+
+  if (sent) {
+    return (
+      <div className={`rounded-xl border border-emerald-500/30 bg-emerald-500/10 ${pad} px-3 py-3 text-sm text-emerald-300`}>
+        ✓ Magic link sent to <strong>{email}</strong>. Open it to finish claiming katwa.link/{slug()}.
+      </div>
+    );
+  }
+
   return (
-    <form onSubmit={submit} className={`flex items-center gap-2 rounded-xl border border-border bg-background/80 backdrop-blur ${pad}`}>
-      <span className="pl-2 text-sm text-muted-foreground whitespace-nowrap">katwa.link/</span>
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="min-w-0 flex-1 bg-transparent py-1.5 text-sm text-foreground outline-none placeholder:text-muted-foreground"
-        placeholder="yourname"
-      />
-      <button type="submit" className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
-        Claim
-      </button>
+    <form onSubmit={submit} className={`flex flex-col gap-2 rounded-xl border border-border bg-background/80 backdrop-blur ${pad}`}>
+      <div className="flex items-center gap-2">
+        <span className="pl-2 text-sm text-muted-foreground whitespace-nowrap">katwa.link/</span>
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="min-w-0 flex-1 bg-transparent py-1.5 text-sm text-foreground outline-none placeholder:text-muted-foreground"
+          placeholder="yourname"
+        />
+        {!needEmail && (
+          <button type="submit" className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
+            Claim
+          </button>
+        )}
+      </div>
+      {needEmail && !user && (
+        <div className="flex items-center gap-2 border-t border-border/50 pt-2">
+          <Mail className="ml-2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="email" required autoFocus value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@email.com"
+            className="min-w-0 flex-1 bg-transparent py-1.5 text-sm outline-none"
+          />
+          <button type="submit" disabled={busy} className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60">
+            {busy ? "Sending…" : "Send link"}
+          </button>
+        </div>
+      )}
     </form>
   );
 }
 
 function Nav() {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
@@ -74,10 +127,29 @@ function Nav() {
           <a href="#pricing" className="hover:text-foreground">Pricing</a>
         </nav>
         <div className="flex items-center gap-2">
-          <a href="#" className="hidden text-sm text-muted-foreground hover:text-foreground sm:block">Log in</a>
-          <Link to="/claim/$username" params={{ username: "yourname" }} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-90">
-            Claim your link
-          </Link>
+          {user ? (
+            <>
+              <button
+                onClick={async () => {
+                  const { data } = await supabase.from("profiles").select("username").eq("user_id", user.id).maybeSingle();
+                  navigate({ to: "/claim/$username", params: { username: data?.username ?? "yourname" } });
+                }}
+                className="hidden text-sm text-muted-foreground hover:text-foreground sm:block"
+              >
+                Dashboard
+              </button>
+              <button onClick={() => signOut()} className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-3 py-2 text-sm text-muted-foreground hover:text-foreground">
+                <LogOut className="h-3 w-3" /> Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/auth" className="hidden text-sm text-muted-foreground hover:text-foreground sm:block">Log in</Link>
+              <Link to="/auth" className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-90">
+                Claim your link
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
@@ -467,12 +539,47 @@ function FeaturesSection() {
 }
 
 function DashboardSection() {
+  const { user } = useAuth();
+  const fetchAnalytics = useServerFn(getMyAnalytics);
+  const { data, isLoading } = useQuery({
+    queryKey: ["my-analytics", user?.id],
+    queryFn: () => fetchAnalytics(),
+    enabled: !!user,
+    staleTime: 60_000,
+  });
+
+  const stats = data
+    ? [
+        ["Profile Views", data.pageViews.toLocaleString(), null],
+        ["Link Clicks", data.linkClicks.toLocaleString(), null],
+        ["Click Through Rate", `${data.ctr}%`, null],
+        ["Top Link", data.topLink?.label ?? "—", data.topLink ? `${data.topLink.clicks} clicks` : null],
+      ]
+    : [
+        ["Profile Views", "—", null],
+        ["Link Clicks", "—", null],
+        ["Click Through Rate", "—", null],
+        ["Top Link", "—", null],
+      ];
+
+  const series = data?.series7d ?? [];
+  const maxV = Math.max(1, ...series.map((d) => d.views));
+  const points = series.map((d, i) => {
+    const x = (i / Math.max(1, series.length - 1)) * 300;
+    const y = 110 - (d.views / maxV) * 90;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+  const linePath = points.length ? `M${points.join(" L")}` : "";
+  const areaPath = points.length ? `M0,120 L${points.join(" L")} L300,120 Z` : "";
+
   return (
     <section id="dashboard" className="relative border-t border-border/50 py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="text-center">
           <h2 className="text-3xl font-extrabold tracking-tight sm:text-5xl">Your dashboard, your data.</h2>
-          <p className="mt-3 text-muted-foreground">Track every click and grow your reach.</p>
+          <p className="mt-3 text-muted-foreground">
+            {user ? "Real clicks from your live page." : "Track every click and grow your reach."}
+          </p>
         </div>
 
         <div className="mt-12 overflow-hidden rounded-2xl border border-border bg-background shadow-2xl">
@@ -502,20 +609,26 @@ function DashboardSection() {
             <div className="p-6 sm:p-8">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold">Overview</h3>
-                <div className="rounded-lg border border-border px-3 py-1.5 text-xs text-muted-foreground">Last 7 Days ▾</div>
+                <div className="rounded-lg border border-border px-3 py-1.5 text-xs text-muted-foreground">Last 7 Days</div>
               </div>
 
+              {!user && (
+                <div className="mt-4 rounded-lg border border-dashed border-border bg-card/40 p-4 text-center text-sm text-muted-foreground">
+                  Sign in and publish your page to see live analytics here.
+                </div>
+              )}
+              {user && !data && !isLoading && (
+                <div className="mt-4 rounded-lg border border-dashed border-border bg-card/40 p-4 text-center text-sm text-muted-foreground">
+                  Publish your page and share it to start collecting clicks.
+                </div>
+              )}
+
               <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {[
-                  ["Profile Views", "12,458", "+18.6%"],
-                  ["Link Clicks", "8,246", "+21.3%"],
-                  ["Click Through Rate", "66.1%", "+9.2%"],
-                  ["Top Source", "TikTok", "+31.4%"],
-                ].map(([label, val, delta]) => (
-                  <div key={label} className="rounded-xl border border-border bg-card/50 p-4">
+                {stats.map(([label, val, sub]) => (
+                  <div key={label as string} className="rounded-xl border border-border bg-card/50 p-4">
                     <div className="text-xs text-muted-foreground">{label}</div>
-                    <div className="mt-1 text-2xl font-extrabold tracking-tight">{val}</div>
-                    <div className="mt-1 text-xs text-emerald-400">↑ {delta}</div>
+                    <div className="mt-1 truncate text-2xl font-extrabold tracking-tight">{val}</div>
+                    {sub && <div className="mt-1 text-xs text-muted-foreground">{sub}</div>}
                   </div>
                 ))}
               </div>
@@ -527,31 +640,30 @@ function DashboardSection() {
                     <span className="text-xs text-muted-foreground">Clicks</span>
                   </div>
                   <ul className="mt-3 space-y-3 text-sm">
-                    {[
-                      [MessageCircle, "Message us on Facebook", "2,984"],
-                      [MessageCircle, "Chat on WhatsApp", "2,341"],
-                      [ShoppingBag, "Shopee Store", "1,812"],
-                      [Music2, "TikTok Shop", "1,109"],
-                    ].map(([I, n, c]) => {
-                      const Icon = I as typeof MessageCircle;
+                    {(data?.topLinks ?? []).map((tl) => {
+                      const Icon = getIcon(tl.icon);
+                      const maxC = data!.topLinks[0]?.clicks || 1;
                       return (
-                        <li key={n as string} className="flex items-center gap-3">
+                        <li key={tl.id} className="flex items-center gap-3">
                           <Icon className="h-4 w-4 text-muted-foreground" />
-                          <span className="flex-1 truncate">{n as string}</span>
+                          <span className="flex-1 truncate">{tl.label}</span>
                           <div className="h-1.5 w-24 overflow-hidden rounded-full bg-muted">
-                            <div className="h-full bg-primary" style={{ width: "70%" }} />
+                            <div className="h-full bg-primary" style={{ width: `${(tl.clicks / maxC) * 100}%` }} />
                           </div>
-                          <span className="w-12 text-right font-semibold">{c as string}</span>
+                          <span className="w-12 text-right font-semibold">{tl.clicks}</span>
                         </li>
                       );
                     })}
+                    {(!data?.topLinks?.length) && (
+                      <li className="text-xs text-muted-foreground">No link clicks yet.</li>
+                    )}
                   </ul>
                 </div>
 
                 <div className="rounded-xl border border-border bg-card/50 p-5">
                   <div className="flex items-center justify-between">
                     <h4 className="text-sm font-semibold">Views Over Time</h4>
-                    <span className="text-xs text-muted-foreground">2,458 on May 14</span>
+                    <span className="text-xs text-muted-foreground">Last 7 days</span>
                   </div>
                   <svg viewBox="0 0 300 120" className="mt-3 h-32 w-full">
                     <defs>
@@ -560,8 +672,11 @@ function DashboardSection() {
                         <stop offset="100%" stopColor="oklch(0.62 0.22 265)" stopOpacity="0" />
                       </linearGradient>
                     </defs>
-                    <path d="M0,90 C40,80 60,70 90,65 C130,58 160,55 190,40 C220,28 250,25 300,15 L300,120 L0,120 Z" fill="url(#g)" />
-                    <path d="M0,90 C40,80 60,70 90,65 C130,58 160,55 190,40 C220,28 250,25 300,15" fill="none" stroke="oklch(0.62 0.22 265)" strokeWidth="2" />
+                    {areaPath && <path d={areaPath} fill="url(#g)" />}
+                    {linePath && <path d={linePath} fill="none" stroke="oklch(0.62 0.22 265)" strokeWidth="2" />}
+                    {!linePath && (
+                      <path d="M0,90 C40,80 60,70 90,65 C130,58 160,55 190,40 C220,28 250,25 300,15" fill="none" stroke="oklch(0.62 0.22 265)" strokeWidth="2" strokeOpacity="0.3" />
+                    )}
                   </svg>
                 </div>
               </div>
