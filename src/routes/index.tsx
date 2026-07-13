@@ -3,9 +3,15 @@ import {
   Link2, MessageCircle, ShoppingBag, Music2, Facebook, Instagram,
   Youtube, MapPin, Calendar, Coffee, Briefcase, FileText, Mail,
   Linkedin, BadgeCheck, Sun, QrCode, BarChart3, CreditCard, Store,
-  Check, Sparkles, Phone, ChevronRight, Play, Star,
+  Check, Sparkles, Phone, ChevronRight, Play, Star, LogOut,
 } from "lucide-react";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { useAuth } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
+import { getMyAnalytics } from "@/lib/profile.functions";
+import { getIcon } from "@/lib/icons";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -39,25 +45,70 @@ function Logo({ className = "" }: { className?: string }) {
 
 function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [needEmail, setNeedEmail] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const { user, signInWithOtp } = useAuth();
   const navigate = useNavigate();
-  const submit = (e: React.FormEvent) => {
+  const slug = () => name.trim().toLowerCase().replace(/[^a-z0-9-]/g, "") || "yourname";
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const slug = name.trim().toLowerCase().replace(/[^a-z0-9-]/g, "") || "yourname";
-    navigate({ to: "/claim/$username", params: { username: slug } });
+    const s = slug();
+    if (user) {
+      // Signed in — go straight to editor; claim page creates the row.
+      navigate({ to: "/claim/$username", params: { username: s } });
+      return;
+    }
+    if (!needEmail) { setNeedEmail(true); return; }
+    setBusy(true);
+    const redirectTo = `${window.location.origin}/auth?next=${encodeURIComponent(`/claim/${s}`)}&pendingUsername=${encodeURIComponent(s)}`;
+    const { error } = await signInWithOtp(email.trim(), redirectTo);
+    setBusy(false);
+    if (!error) setSent(true);
   };
+
   const pad = size === "lg" ? "p-2" : "p-1.5";
+
+  if (sent) {
+    return (
+      <div className={`rounded-xl border border-emerald-500/30 bg-emerald-500/10 ${pad} px-3 py-3 text-sm text-emerald-300`}>
+        ✓ Magic link sent to <strong>{email}</strong>. Open it to finish claiming katwa.link/{slug()}.
+      </div>
+    );
+  }
+
   return (
-    <form onSubmit={submit} className={`flex items-center gap-2 rounded-xl border border-border bg-background/80 backdrop-blur ${pad}`}>
-      <span className="pl-2 text-sm text-muted-foreground whitespace-nowrap">katwa.link/</span>
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="min-w-0 flex-1 bg-transparent py-1.5 text-sm text-foreground outline-none placeholder:text-muted-foreground"
-        placeholder="yourname"
-      />
-      <button type="submit" className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
-        Claim
-      </button>
+    <form onSubmit={submit} className={`flex flex-col gap-2 rounded-xl border border-border bg-background/80 backdrop-blur ${pad}`}>
+      <div className="flex items-center gap-2">
+        <span className="pl-2 text-sm text-muted-foreground whitespace-nowrap">katwa.link/</span>
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="min-w-0 flex-1 bg-transparent py-1.5 text-sm text-foreground outline-none placeholder:text-muted-foreground"
+          placeholder="yourname"
+        />
+        {!needEmail && (
+          <button type="submit" className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
+            Claim
+          </button>
+        )}
+      </div>
+      {needEmail && !user && (
+        <div className="flex items-center gap-2 border-t border-border/50 pt-2">
+          <Mail className="ml-2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="email" required autoFocus value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@email.com"
+            className="min-w-0 flex-1 bg-transparent py-1.5 text-sm outline-none"
+          />
+          <button type="submit" disabled={busy} className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60">
+            {busy ? "Sending…" : "Send link"}
+          </button>
+        </div>
+      )}
     </form>
   );
 }
