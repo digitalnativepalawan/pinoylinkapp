@@ -377,15 +377,34 @@ function ClaimPage() {
                 </div>
               </Field>
               <Field label="Template">
-                <select
-                  value={profile.template}
-                  onChange={(e) => patchProfile({ template: e.target.value })}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary"
-                >
-                  {["classic-pinoy", "seller", "creator", "business", "resort", "patriotic-pinoy"].map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  {[
+                    { slug: "classic-pinoy", label: "Classic Pinoy", swatch: ["#ffffff", "#ffd23a", "#0038a8", "#cc1f2d"] },
+                    { slug: "seller", label: "Seller", swatch: ["#fff6e3", "#fb923c", "#ee4d2d", "#10b981"] },
+                    { slug: "creator", label: "Creator", swatch: ["#1a103d", "#2d1654", "#e1306c", "#ff0000"] },
+                    { slug: "business", label: "Business", swatch: ["#064e3b", "#0d7a5f", "#f5f0e0", "#c9a84c"] },
+                    { slug: "resort", label: "Resort", swatch: ["#38bdf8", "#0369a1", "#5eead4", "#fef3c7"] },
+                    { slug: "patriotic-pinoy", label: "Patriotic Pinoy", swatch: ["#0038a8", "#cc1f2d", "#ffd23a", "#ffffff"] },
+                    ...NEW_TEMPLATES.map((t) => ({ slug: t.slug, label: t.label, swatch: t.swatch as unknown as string[] })),
+                  ].map((t) => {
+                    const active = profile.template === t.slug;
+                    return (
+                      <button
+                        key={t.slug}
+                        type="button"
+                        onClick={() => patchProfile({ template: t.slug })}
+                        className={`flex flex-col items-start gap-2 rounded-lg border p-2.5 text-left transition ${active ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border bg-background hover:bg-muted"}`}
+                      >
+                        <div className="flex h-6 w-full overflow-hidden rounded-md">
+                          {t.swatch.map((c, i) => (
+                            <div key={i} className="h-full flex-1" style={{ background: c }} />
+                          ))}
+                        </div>
+                        <span className="text-[11px] font-semibold uppercase tracking-wide">{t.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </Field>
             </div>
           </div>
