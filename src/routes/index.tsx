@@ -114,6 +114,8 @@ function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
 }
 
 function Nav() {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
@@ -125,10 +127,29 @@ function Nav() {
           <a href="#pricing" className="hover:text-foreground">Pricing</a>
         </nav>
         <div className="flex items-center gap-2">
-          <a href="#" className="hidden text-sm text-muted-foreground hover:text-foreground sm:block">Log in</a>
-          <Link to="/claim/$username" params={{ username: "yourname" }} className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-90">
-            Claim your link
-          </Link>
+          {user ? (
+            <>
+              <button
+                onClick={async () => {
+                  const { data } = await supabase.from("profiles").select("username").eq("user_id", user.id).maybeSingle();
+                  navigate({ to: "/claim/$username", params: { username: data?.username ?? "yourname" } });
+                }}
+                className="hidden text-sm text-muted-foreground hover:text-foreground sm:block"
+              >
+                Dashboard
+              </button>
+              <button onClick={() => signOut()} className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-3 py-2 text-sm text-muted-foreground hover:text-foreground">
+                <LogOut className="h-3 w-3" /> Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/auth" className="hidden text-sm text-muted-foreground hover:text-foreground sm:block">Log in</Link>
+              <Link to="/auth" className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-90">
+                Claim your link
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
