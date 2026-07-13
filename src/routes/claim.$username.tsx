@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ChevronRight, Check, Copy, Eye, Share2, Rocket, ArrowLeft,
-  Globe, QrCode, X, Plus, Trash2, Loader2, Upload, LogOut,
+  Globe, QrCode, X, Plus, Trash2, Loader2, Upload, LogOut, GripVertical,
 } from "lucide-react";
 import { PhoneFrame } from "./index";
 import { supabase } from "@/integrations/supabase/client";
