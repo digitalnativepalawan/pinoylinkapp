@@ -75,8 +75,6 @@ function PublicProfile() {
   }
 
   const p = data.profile;
-  const bgClass = TEMPLATE_BG[p.template] ?? TEMPLATE_BG["classic-pinoy"];
-  const isDark = bgClass.includes("text-white");
 
   const handleClick = async (linkId: string, url: string) => {
     try {
@@ -87,9 +85,20 @@ function PublicProfile() {
         referrer: document.referrer || null,
         user_agent: navigator.userAgent,
       });
-    } catch {}
+    } catch { /* ignore */ }
     window.location.href = url;
   };
+
+  if (isNewTemplate(p.template)) {
+    return renderNewTemplate(p.template, {
+      profile: p,
+      links: data.links,
+      onLinkClick: handleClick,
+    });
+  }
+
+  const bgClass = TEMPLATE_BG[p.template] ?? TEMPLATE_BG["classic-pinoy"];
+  const isDark = bgClass.includes("text-white");
 
   return (
     <div className={`min-h-screen ${bgClass}`}>
