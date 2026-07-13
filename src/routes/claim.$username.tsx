@@ -293,7 +293,7 @@ function ClaimPage() {
             </button>
             <button
               onClick={handlePublish}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-90"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
             >
               <Rocket className="h-4 w-4" /> {profile.published ? "Update" : "Publish"}
             </button>
@@ -310,7 +310,7 @@ function ClaimPage() {
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[1fr_320px]">
         <div className="space-y-6">
           <div className="rounded-2xl border border-border bg-card/50 p-5">
-            <h2 className="text-lg font-bold">Profile</h2>
+            <h2 className="text-lg font-medium">Profile</h2>
 
             <div className="mt-4 grid gap-4">
               <Field label="Avatar">
@@ -392,7 +392,7 @@ function ClaimPage() {
           <div className="rounded-2xl border border-border bg-card/50 p-5">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold">Links</h2>
+                <h2 className="text-lg font-medium">Links</h2>
                 <p className="text-sm text-muted-foreground">Add, edit, and reorder your links.</p>
               </div>
               <button onClick={addLink} className="inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">
@@ -515,7 +515,7 @@ function MiniPreview({ profile, links }: { profile: Profile; links: LinkRow[] })
             <div className={`inline-block rounded-full px-2 py-0.5 text-[8px] font-semibold text-white ${profile.status === "online" ? "bg-emerald-500" : "bg-zinc-400"}`}>
               ● {profile.status === "online" ? "Active now" : "Away"}
             </div>
-            <h3 className="mt-1 text-sm font-extrabold tracking-tight text-zinc-900">{profile.display_name}</h3>
+            <h3 className="mt-1 text-sm font-semibold tracking-tight text-zinc-900">{profile.display_name}</h3>
             <p className="mt-0.5 whitespace-pre-line text-[9px] text-zinc-600">{profile.bio}</p>
           </div>
           <div className="mt-3 space-y-1.5">
@@ -584,7 +584,7 @@ function ShareModal({ url, onClose, onView }: { url: string; onClose: () => void
         <div className="grid h-12 w-12 place-items-center rounded-xl bg-emerald-500/20 text-emerald-400">
           <Check className="h-6 w-6" />
         </div>
-        <h2 className="mt-4 text-xl font-bold">You're live! 🎉</h2>
+        <h2 className="mt-4 text-xl font-medium">You're live! 🎉</h2>
         <p className="mt-1 text-sm text-muted-foreground">Your katwa.link page is published. Share it everywhere.</p>
 
         <div className="mt-5 flex items-center gap-2 rounded-lg border border-border bg-background p-2">

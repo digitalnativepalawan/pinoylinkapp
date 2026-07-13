@@ -17,7 +17,7 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
+        <h1 className="text-7xl font-medium text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
@@ -92,6 +92,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/T9Th5uPVO0aXJIb4F3X0QFtM7K13/social-images/social-1782609152863-WhatsApp_Image_2026-06-20_at_4.50.51_PM.webp" },
     ],
     links: [
+      { rel: "preconnect", href: "https://api.fontshare.com" },
+      {
+        rel: "stylesheet",
+        href: "https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600&f[]=satoshi@400,500,700&display=swap",
+      },
       {
         rel: "stylesheet",
         href: appCss,

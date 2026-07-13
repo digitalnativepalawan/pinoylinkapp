@@ -34,7 +34,7 @@ function NotFoundView() {
     <div className="grid min-h-screen place-items-center bg-background px-4 text-center">
       <div className="max-w-sm">
         <div className="text-6xl">🔗</div>
-        <h1 className="mt-4 text-2xl font-extrabold">This page doesn't exist yet</h1>
+        <h1 className="mt-4 text-2xl font-semibold">This page doesn't exist yet</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           The link isn't published — or the username is up for grabs.
         </p>
@@ -104,7 +104,7 @@ function PublicProfile() {
           <div className={`mt-3 inline-block rounded-full px-3 py-0.5 text-[11px] font-semibold text-white ${p.status === "online" ? "bg-emerald-500" : "bg-zinc-500"}`}>
             ● {p.status === "online" ? "Active now" : "Away"}
           </div>
-          <h1 className="mt-2 text-2xl font-extrabold tracking-tight">{p.display_name}</h1>
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight">{p.display_name}</h1>
           {p.bio && <p className={`mt-1 whitespace-pre-line text-sm ${isDark ? "text-white/80" : "text-zinc-600"}`}>{p.bio}</p>}
         </div>
 

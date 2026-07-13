@@ -25,21 +25,21 @@
   --color-ph-blue: var(--ph-blue);
   --color-ph-red: var(--ph-red);
   --color-ph-yellow: var(--ph-yellow);
-  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Clash Display", system-ui, sans-serif;
+  --font-sans: "Satoshi", system-ui, sans-serif;
 }
 
 :root {
-  --radius: 0.875rem;
+  --radius: 0.5rem;
   --background: oklch(0.16 0.03 265);
   --foreground: oklch(0.98 0.005 250);
   --card: oklch(0.21 0.035 265);
   --card-foreground: oklch(0.98 0.005 250);
-  --primary: oklch(0.62 0.22 265);
+  --primary: oklch(0.45 0.2 265);
   --primary-foreground: oklch(0.99 0 0);
   --muted: oklch(0.26 0.03 265);
   --muted-foreground: oklch(0.72 0.02 265);
-  --accent: oklch(0.62 0.22 265);
+  --accent: oklch(0.45 0.2 265);
   --accent-foreground: oklch(0.99 0 0);
   --border: oklch(1 0 0 / 8%);
   --ph-blue: oklch(0.45 0.2 265);

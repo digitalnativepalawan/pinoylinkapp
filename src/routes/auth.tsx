@@ -85,7 +85,7 @@ function AuthPage() {
     <div className="grid min-h-screen place-items-center bg-background px-4">
       <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl">
         <Link to="/" className="text-xs text-muted-foreground hover:text-foreground">← Back</Link>
-        <h1 className="mt-3 text-2xl font-extrabold tracking-tight">
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight">
           {pendingUsername ? `Claim katwa.link/${pendingUsername}` : "Sign in"}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -110,7 +110,7 @@ function AuthPage() {
             {err && <p className="text-xs text-red-400">{err}</p>}
             <button
               disabled={busy}
-              className="w-full rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-90 disabled:opacity-60"
+              className="w-full rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
             >
               {busy ? "Sending…" : "Send magic link"}
             </button>

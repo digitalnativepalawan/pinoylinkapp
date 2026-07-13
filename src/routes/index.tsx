@@ -32,10 +32,10 @@ export const Route = createFileRoute("/")({
 function Logo({ className = "" }: { className?: string }) {
   return (
     <Link to="/" className={`flex items-center gap-2 ${className}`}>
-      <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-primary to-[oklch(0.55_0.24_290)] shadow-lg shadow-primary/30">
+      <div className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-primary to-[oklch(0.55_0.24_290)]">
         <Link2 className="h-4 w-4 -rotate-45 text-white" />
       </div>
-      <span className="text-xl font-bold tracking-tight">
+      <span className="text-xl font-medium tracking-tight">
         <span className="text-[oklch(0.6_0.22_265)]">katwa</span>
         <span className="text-foreground">.link</span>
       </span>
@@ -145,7 +145,7 @@ function Nav() {
           ) : (
             <>
               <Link to="/auth" className="hidden text-sm text-muted-foreground hover:text-foreground sm:block">Log in</Link>
-              <Link to="/auth" className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/30 hover:opacity-90">
+              <Link to="/auth" className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
                 Claim your link
               </Link>
             </>
@@ -189,7 +189,7 @@ function LinkRow({
 
 function PayBadge({ label, bg }: { label: string; bg: string }) {
   return (
-    <div className={`flex h-7 items-center justify-center rounded-md px-1.5 text-[9px] font-bold text-white ${bg}`}>
+    <div className={`flex h-7 items-center justify-center rounded-md px-1.5 text-[9px] font-medium text-white ${bg}`}>
       {label}
     </div>
   );
@@ -224,7 +224,7 @@ export function ClassicPinoyPhone({ name = "KATWA FINDS", bio = "Trusted deals. 
           <div className="mx-auto h-20 w-20 rounded-full border-4 border-white bg-gradient-to-br from-pink-200 to-pink-400 shadow-lg" />
           <div className="mt-2 text-center">
             <div className="inline-block rounded-full bg-[#10b981] px-2 py-0.5 text-[8px] font-semibold text-white">● Online</div>
-            <h3 className="mt-1 text-sm font-extrabold tracking-tight text-zinc-900">{name}</h3>
+            <h3 className="mt-1 text-sm font-semibold tracking-tight text-zinc-900">{name}</h3>
             <p className="mt-0.5 whitespace-pre-line text-[9px] text-zinc-600">{bio}</p>
           </div>
           <div className="mt-3 space-y-1.5">
@@ -246,26 +246,26 @@ function SellerPhone() {
   return (
     <PhoneFrame>
       <div className="absolute inset-0 bg-[#fff6e3]">
-        <div className="absolute left-2 top-8 z-10 rounded-md bg-[#fb923c] px-1.5 py-0.5 text-[8px] font-bold text-white rotate-[-8deg]">BEST<br/>SELLER</div>
+        <div className="absolute left-2 top-8 z-10 rounded-md bg-[#fb923c] px-1.5 py-0.5 text-[8px] font-medium text-white rotate-[-8deg]">BEST<br/>SELLER</div>
         <div className="relative pt-10 px-3">
           <div className="mx-auto grid h-20 w-20 place-items-center rounded-full border-4 border-white bg-[#fb923c] shadow-lg">
             <ShoppingBag className="h-9 w-9 text-white" />
           </div>
           <div className="mt-2 text-center">
             <div className="inline-block rounded-full bg-[#10b981] px-2 py-0.5 text-[8px] font-semibold text-white">● Online</div>
-            <h3 className="mt-1 text-sm font-extrabold text-zinc-900">KATWA FINDS</h3>
+            <h3 className="mt-1 text-sm font-semibold text-zinc-900">KATWA FINDS</h3>
             <p className="mt-0.5 text-[9px] text-zinc-600">Budol finds • Fast response<br/>Trusted seller ⭐</p>
           </div>
           <div className="mt-2 rounded-xl bg-white p-2 shadow-sm">
             <div className="flex gap-2">
-              <div className="grid h-14 w-14 shrink-0 place-items-center rounded-lg bg-pink-100 text-pink-500 text-[8px] font-bold">FEATURED</div>
+              <div className="grid h-14 w-14 shrink-0 place-items-center rounded-lg bg-pink-100 text-pink-500 text-[8px] font-medium">FEATURED</div>
               <div className="min-w-0 flex-1">
-                <div className="text-[10px] font-bold text-zinc-900">Mini Fan</div>
+                <div className="text-[10px] font-medium text-zinc-900">Mini Fan</div>
                 <ul className="mt-0.5 space-y-0.5 text-[8px] text-zinc-600">
                   <li>✓ Ultra quiet</li>
                   <li>✓ Rechargeable</li>
                 </ul>
-                <div className="mt-0.5 text-[11px] font-extrabold text-[#fb923c]">₱299</div>
+                <div className="mt-0.5 text-[11px] font-semibold text-[#fb923c]">₱299</div>
               </div>
             </div>
           </div>
@@ -291,7 +291,7 @@ function CreatorPhone() {
           <div className="mx-auto h-20 w-20 rounded-full border-4 border-white bg-gradient-to-br from-amber-200 to-amber-400 shadow-lg" />
           <div className="mt-2 text-center">
             <div className="inline-block rounded-full bg-[#10b981] px-2 py-0.5 text-[8px] font-semibold text-white">● Online</div>
-            <h3 className="mt-1 flex items-center justify-center gap-1 text-sm font-extrabold text-white">JUAN VLOGS <BadgeCheck className="h-3 w-3 text-sky-400" /></h3>
+            <h3 className="mt-1 flex items-center justify-center gap-1 text-sm font-semibold text-white">JUAN VLOGS <BadgeCheck className="h-3 w-3 text-sky-400" /></h3>
             <p className="mt-0.5 text-[9px] text-white/75">Creating videos that inspire.<br/>Vlogs • Travel • Lifestyle</p>
           </div>
           <div className="mt-2 relative h-20 overflow-hidden rounded-xl bg-gradient-to-br from-fuchsia-700 via-purple-700 to-pink-600">
@@ -327,7 +327,7 @@ function BusinessPhone() {
           </div>
           <div className="mt-2 text-center">
             <div className="inline-block rounded-full bg-emerald-500 px-2 py-0.5 text-[8px] font-semibold text-white">Open Now</div>
-            <h3 className="mt-1 text-sm font-extrabold text-white">BEAN &amp; BREW</h3>
+            <h3 className="mt-1 text-sm font-semibold text-white">BEAN &amp; BREW</h3>
             <p className="mt-0.5 text-[9px] text-white/85">Good coffee. Good food.<br/>Good vibes.</p>
           </div>
           <div className="mt-3 space-y-1.5">
@@ -355,7 +355,7 @@ function ResortPhone() {
           </div>
           <div className="mt-2 text-center">
             <div className="inline-block rounded-full bg-emerald-500 px-2 py-0.5 text-[8px] font-semibold text-white">● Online</div>
-            <h3 className="mt-1 text-sm font-extrabold text-white">AZUL BEACH RESORT</h3>
+            <h3 className="mt-1 text-sm font-semibold text-white">AZUL BEACH RESORT</h3>
             <p className="mt-0.5 text-[9px] text-white/90">Your escape. Your paradise.<br/>San Vicente, Palawan</p>
           </div>
           <div className="mt-3 space-y-1.5">
@@ -382,7 +382,7 @@ function PatrioticPhone() {
           <div className="mx-auto h-20 w-20 rounded-full border-4 border-white bg-gradient-to-br from-amber-200 to-amber-500 shadow-lg" />
           <div className="mt-2 text-center">
             <div className="inline-block rounded-full bg-emerald-500 px-2 py-0.5 text-[8px] font-semibold text-white">● Online</div>
-            <h3 className="mt-1 text-sm font-extrabold text-white">PINOY CREATIVES</h3>
+            <h3 className="mt-1 text-sm font-semibold text-white">PINOY CREATIVES</h3>
             <p className="mt-0.5 text-[9px] text-white/85">Designs that stand out.<br/>Proudly Filipino 🇵🇭</p>
           </div>
           <div className="mt-3 space-y-1.5">
@@ -412,8 +412,6 @@ const templates = [
 function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="absolute -left-32 top-0 h-96 w-96 rounded-full bg-primary/20 blur-3xl" />
-      <div className="absolute -right-32 top-32 h-96 w-96 rounded-full bg-[#cc1f2d]/15 blur-3xl" />
       <div className="absolute right-10 top-20 text-[#ffd23a] hidden sm:block">
         <Sun className="h-16 w-16" />
       </div>
@@ -423,9 +421,9 @@ function Hero() {
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Built for the Philippine market 🇵🇭
           </div>
-          <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
+          <h1 className="mt-6 text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
             One Link.<br/>
-            <span className="bg-gradient-to-r from-[#60a5fa] via-primary to-[#ef4444] bg-clip-text text-transparent">All Your Channels.</span>
+            <span className="text-primary">All Your Channels.</span>
           </h1>
           <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
             Built for the way Filipinos connect, chat, and shop online. Messenger, WhatsApp,
@@ -455,7 +453,6 @@ function Hero() {
         </div>
 
         <div className="relative flex items-start justify-center">
-          <div className="absolute -inset-10 rounded-[3rem] bg-gradient-to-br from-primary/10 via-transparent to-[#cc1f2d]/10 blur-2xl" />
           <ClassicPinoyPhone />
         </div>
       </div>
@@ -469,7 +466,7 @@ function TemplatesSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="text-center">
           <Logo className="justify-center" />
-          <h2 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-5xl">
+          <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-5xl">
             Beautiful Templates,{" "}
             <span className="text-[#60a5fa]">Filipino</span>{" "}
             <span className="text-[#ef4444]">Style</span>
@@ -490,7 +487,7 @@ function TemplatesSection() {
                 <Comp />
               </div>
               <div className="mt-5 text-center">
-                <div className={`text-base font-extrabold tracking-wider ${color}`}>{name}</div>
+                <div className={`text-base font-semibold tracking-wider ${color}`}>{name}</div>
                 <p className="mt-1 max-w-[16rem] text-xs text-muted-foreground">{desc}</p>
               </div>
             </Link>
@@ -519,7 +516,7 @@ function FeaturesSection() {
     <section id="features" className="relative border-t border-border/50 bg-card/30 py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold tracking-tight sm:text-5xl">Filipino-First Features</h2>
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-5xl">Filipino-First Features</h2>
           <p className="mt-3 text-muted-foreground">Designed for how Pinoys actually do business online.</p>
         </div>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -528,7 +525,7 @@ function FeaturesSection() {
               <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary/15 text-primary">
                 <Icon className="h-5 w-5" />
               </div>
-              <h3 className="mt-4 font-bold">{title}</h3>
+              <h3 className="mt-4 font-medium">{title}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{desc}</p>
             </div>
           ))}
@@ -576,7 +573,7 @@ function DashboardSection() {
     <section id="dashboard" className="relative border-t border-border/50 py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold tracking-tight sm:text-5xl">Your dashboard, your data.</h2>
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-5xl">Your dashboard, your data.</h2>
           <p className="mt-3 text-muted-foreground">
             {user ? "Real clicks from your live page." : "Track every click and grow your reach."}
           </p>
@@ -608,7 +605,7 @@ function DashboardSection() {
 
             <div className="p-6 sm:p-8">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold">Overview</h3>
+                <h3 className="text-xl font-medium">Overview</h3>
                 <div className="rounded-lg border border-border px-3 py-1.5 text-xs text-muted-foreground">Last 7 Days</div>
               </div>
 
@@ -627,7 +624,7 @@ function DashboardSection() {
                 {stats.map(([label, val, sub]) => (
                   <div key={label as string} className="rounded-xl border border-border bg-card/50 p-4">
                     <div className="text-xs text-muted-foreground">{label}</div>
-                    <div className="mt-1 truncate text-2xl font-extrabold tracking-tight">{val}</div>
+                    <div className="mt-1 truncate text-2xl font-semibold tracking-tight">{val}</div>
                     {sub && <div className="mt-1 text-xs text-muted-foreground">{sub}</div>}
                   </div>
                 ))}
@@ -693,9 +690,7 @@ function CTASection() {
     <section id="pricing" className="relative border-t border-border/50 py-20">
       <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
         <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-card via-card to-background p-8 sm:p-10">
-          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/30 blur-3xl" />
-          <div className="absolute -left-10 -bottom-10 h-40 w-40 rounded-full bg-[#cc1f2d]/20 blur-3xl" />
-          <h2 className="relative text-3xl font-extrabold tracking-tight sm:text-5xl">
+          <h2 className="relative text-3xl font-semibold tracking-tight sm:text-5xl">
             Para sa mga Pinoy, <span className="text-[#60a5fa]">para sa</span> <span className="text-[#ef4444]">Pilipino</span>. 🇵🇭
           </h2>
           <p className="relative mt-4 text-muted-foreground">
