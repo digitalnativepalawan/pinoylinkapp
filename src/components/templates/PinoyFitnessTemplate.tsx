@@ -44,7 +44,18 @@ function SunburstBadge({ size = 48 }: { size?: number }) {
         const y1 = 50 + Math.sin(angle) * 24;
         const x2 = 50 + Math.cos(angle) * 40;
         const y2 = 50 + Math.sin(angle) * 40;
-        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={YELLOW} strokeWidth={5} strokeLinecap="round" />;
+        return (
+          <line
+            key={i}
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            stroke={YELLOW}
+            strokeWidth={5}
+            strokeLinecap="round"
+          />
+        );
       })}
     </svg>
   );
@@ -99,7 +110,11 @@ export default function PinoyFitnessTemplate({ profile, links, onLinkClick }: Te
       {/* Red diagonal ribbon - bottom left */}
       <div
         className="pointer-events-none absolute -left-8 bottom-40 h-64 w-1/2"
-        style={{ background: RED, clipPath: "polygon(0 40%, 100% 0, 80% 100%, 0 100%)", opacity: 0.9 }}
+        style={{
+          background: RED,
+          clipPath: "polygon(0 40%, 100% 0, 80% 100%, 0 100%)",
+          opacity: 0.9,
+        }}
       />
       {/* Baybayin-style side pattern */}
       <div
@@ -111,10 +126,24 @@ export default function PinoyFitnessTemplate({ profile, links, onLinkClick }: Te
       />
       {/* Slogan top-right corner */}
       <div className="absolute right-4 top-6 z-10 text-right leading-none">
-        <div className="text-2xl font-black italic tracking-tight text-white [text-shadow:_2px_2px_0_#061138]">STRONG</div>
-        <div className="text-2xl font-black italic tracking-tight" style={{ color: YELLOW, textShadow: "2px 2px 0 #061138" }}>PINOY.</div>
-        <div className="text-2xl font-black italic tracking-tight text-white [text-shadow:_2px_2px_0_#061138]">STRONG</div>
-        <div className="text-2xl font-black italic tracking-tight" style={{ color: RED, textShadow: "2px 2px 0 #061138" }}>BAYAN.</div>
+        <div className="text-2xl font-black italic tracking-tight text-white [text-shadow:_2px_2px_0_#061138]">
+          STRONG
+        </div>
+        <div
+          className="text-2xl font-black italic tracking-tight"
+          style={{ color: YELLOW, textShadow: "2px 2px 0 #061138" }}
+        >
+          PINOY.
+        </div>
+        <div className="text-2xl font-black italic tracking-tight text-white [text-shadow:_2px_2px_0_#061138]">
+          STRONG
+        </div>
+        <div
+          className="text-2xl font-black italic tracking-tight"
+          style={{ color: RED, textShadow: "2px 2px 0 #061138" }}
+        >
+          BAYAN.
+        </div>
         <div className="mt-1 text-[10px] font-bold italic text-white/90">
           KATAWAN. DISIPLINA. <span style={{ color: YELLOW }}>PUSO.</span>
         </div>
@@ -125,11 +154,18 @@ export default function PinoyFitnessTemplate({ profile, links, onLinkClick }: Te
         <div className="mx-auto mt-16 flex flex-col items-center">
           <div
             className="relative grid h-36 w-36 place-items-center rounded-full"
-            style={{ background: `conic-gradient(${RED} 0 33%, ${NAVY} 33% 66%, ${YELLOW} 66% 100%)`, padding: 4 }}
+            style={{
+              background: `conic-gradient(${RED} 0 33%, ${NAVY} 33% 66%, ${YELLOW} 66% 100%)`,
+              padding: 4,
+            }}
           >
             <div className="h-full w-full overflow-hidden rounded-full border-4 border-white bg-[#0a1c5c]">
               {profile.avatar_url ? (
-                <img src={profile.avatar_url} alt={profile.display_name} className="h-full w-full object-cover" />
+                <img
+                  src={profile.avatar_url}
+                  alt={profile.display_name}
+                  className="h-full w-full object-cover"
+                />
               ) : (
                 <div className="grid h-full w-full place-items-center text-white/60">
                   <Dumbbell className="h-12 w-12" />
@@ -147,7 +183,10 @@ export default function PinoyFitnessTemplate({ profile, links, onLinkClick }: Te
           <div className="text-5xl font-black italic tracking-tight text-white [text-shadow:_3px_3px_0_#061138]">
             {profile.display_name.toUpperCase()}
           </div>
-          <div className="mx-auto mt-2 inline-block -rotate-1 rounded-md px-4 py-1" style={{ background: YELLOW }}>
+          <div
+            className="mx-auto mt-2 inline-block -rotate-1 rounded-md px-4 py-1"
+            style={{ background: YELLOW }}
+          >
             <span className="text-sm font-black italic tracking-widest" style={{ color: NAVY }}>
               {profile.status === "online" ? "ACTIVE NOW" : "AWAY"}
             </span>
@@ -158,7 +197,11 @@ export default function PinoyFitnessTemplate({ profile, links, onLinkClick }: Te
         {bio && (
           <p className="mx-auto mt-5 max-w-sm text-center text-sm font-medium leading-relaxed text-white/95">
             {bioWords.map((w, i) => (
-              <span key={i} className={i === highlightIdx ? "font-black" : ""} style={i === highlightIdx ? { color: YELLOW } : undefined}>
+              <span
+                key={i}
+                className={i === highlightIdx ? "font-black" : ""}
+                style={i === highlightIdx ? { color: YELLOW } : undefined}
+              >
                 {w}{" "}
               </span>
             ))}
@@ -171,7 +214,11 @@ export default function PinoyFitnessTemplate({ profile, links, onLinkClick }: Te
             const Icon = getIcon(l.icon);
             const scheme = ROW_COLORS[i % ROW_COLORS.length];
             let host = "";
-            try { host = new URL(l.url).hostname.replace(/^www\./, ""); } catch { /* ignore */ }
+            try {
+              host = new URL(l.url).hostname.replace(/^www\./, "");
+            } catch {
+              /* ignore */
+            }
             return (
               <button
                 key={l.id}
@@ -183,11 +230,15 @@ export default function PinoyFitnessTemplate({ profile, links, onLinkClick }: Te
                   <Icon className={`h-6 w-6 ${scheme.text}`} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className={`truncate text-base font-black italic uppercase tracking-wide ${scheme.text}`}>
+                  <div
+                    className={`truncate text-base font-black italic uppercase tracking-wide ${scheme.text}`}
+                  >
                     {l.label}
                   </div>
                   {host && (
-                    <div className={`truncate text-[10px] font-bold uppercase tracking-wider ${scheme.sub}`}>
+                    <div
+                      className={`truncate text-[10px] font-bold uppercase tracking-wider ${scheme.sub}`}
+                    >
                       {host}
                     </div>
                   )}

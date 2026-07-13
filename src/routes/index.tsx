@@ -1,9 +1,32 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
-  Link2, MessageCircle, ShoppingBag, Music2, Facebook, Instagram,
-  Youtube, MapPin, Calendar, Coffee, Briefcase, FileText, Mail,
-  Linkedin, BadgeCheck, Sun, QrCode, BarChart3, CreditCard, Store,
-  Check, Sparkles, Phone, ChevronRight, Play, Star, LogOut,
+  Link2,
+  MessageCircle,
+  ShoppingBag,
+  Music2,
+  Facebook,
+  Instagram,
+  Youtube,
+  MapPin,
+  Calendar,
+  Coffee,
+  Briefcase,
+  FileText,
+  Mail,
+  Linkedin,
+  BadgeCheck,
+  Sun,
+  QrCode,
+  BarChart3,
+  CreditCard,
+  Store,
+  Check,
+  Sparkles,
+  Phone,
+  ChevronRight,
+  Play,
+  Star,
+  LogOut,
 } from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -18,13 +41,24 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "katwa.link — One Link. All Your Channels. Made for Filipinos." },
-      { name: "description", content: "Filipino-first link-in-bio. Connect Messenger, WhatsApp, Shopee, Lazada, TikTok, GCash and more in one beautiful page." },
+      {
+        name: "description",
+        content:
+          "Filipino-first link-in-bio. Connect Messenger, WhatsApp, Shopee, Lazada, TikTok, GCash and more in one beautiful page.",
+      },
       { property: "og:title", content: "katwa.link — Beautiful Templates, Filipino Style" },
-      { property: "og:description", content: "Built for Filipino creators, sellers and businesses. Simple. Fast. Pinoy-friendly." },
+      {
+        property: "og:description",
+        content:
+          "Built for Filipino creators, sellers and businesses. Simple. Fast. Pinoy-friendly.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "katwa.link — Beautiful Templates, Filipino Style" },
-      { name: "twitter:description", content: "Built for Filipino creators, sellers and businesses." },
+      {
+        name: "twitter:description",
+        content: "Built for Filipino creators, sellers and businesses.",
+      },
     ],
   }),
   component: Landing,
@@ -52,7 +86,11 @@ function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
   const [busy, setBusy] = useState(false);
   const { user, signInWithOtp } = useAuth();
   const navigate = useNavigate();
-  const slug = () => name.trim().toLowerCase().replace(/[^a-z0-9-]/g, "") || "yourname";
+  const slug = () =>
+    name
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, "") || "yourname";
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +100,10 @@ function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
       navigate({ to: "/claim/$username", params: { username: s } });
       return;
     }
-    if (!needEmail) { setNeedEmail(true); return; }
+    if (!needEmail) {
+      setNeedEmail(true);
+      return;
+    }
     setBusy(true);
     const redirectTo = `${window.location.origin}/auth?next=${encodeURIComponent(`/claim/${s}`)}&pendingUsername=${encodeURIComponent(s)}`;
     const { error } = await signInWithOtp(email.trim(), redirectTo);
@@ -74,14 +115,20 @@ function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
 
   if (sent) {
     return (
-      <div className={`rounded-xl border border-emerald-500/30 bg-emerald-500/10 ${pad} px-3 py-3 text-sm text-emerald-300`}>
-        ✓ Magic link sent to <strong>{email}</strong>. Open it to finish claiming katwa.link/{slug()}.
+      <div
+        className={`rounded-xl border border-emerald-500/30 bg-emerald-500/10 ${pad} px-3 py-3 text-sm text-emerald-300`}
+      >
+        ✓ Magic link sent to <strong>{email}</strong>. Open it to finish claiming katwa.link/
+        {slug()}.
       </div>
     );
   }
 
   return (
-    <form onSubmit={submit} className={`flex flex-col gap-2 rounded-xl border border-border bg-background/80 backdrop-blur ${pad}`}>
+    <form
+      onSubmit={submit}
+      className={`flex flex-col gap-2 rounded-xl border border-border bg-background/80 backdrop-blur ${pad}`}
+    >
       <div className="flex items-center gap-2">
         <span className="pl-2 text-sm text-muted-foreground whitespace-nowrap">katwa.link/</span>
         <input
@@ -91,7 +138,10 @@ function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
           placeholder="yourname"
         />
         {!needEmail && (
-          <button type="submit" className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
+          <button
+            type="submit"
+            className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+          >
             Claim
           </button>
         )}
@@ -100,12 +150,19 @@ function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
         <div className="flex items-center gap-2 border-t border-border/50 pt-2">
           <Mail className="ml-2 h-4 w-4 text-muted-foreground" />
           <input
-            type="email" required autoFocus value={email}
+            type="email"
+            required
+            autoFocus
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@email.com"
             className="min-w-0 flex-1 bg-transparent py-1.5 text-sm outline-none"
           />
-          <button type="submit" disabled={busy} className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60">
+          <button
+            type="submit"
+            disabled={busy}
+            className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+          >
             {busy ? "Sending…" : "Send link"}
           </button>
         </div>
@@ -122,31 +179,57 @@ function Nav() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Logo />
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-          <a href="#features" className="hover:text-foreground">Features</a>
-          <a href="#templates" className="hover:text-foreground">Templates</a>
-          <a href="#dashboard" className="hover:text-foreground">Dashboard</a>
-          <a href="#pricing" className="hover:text-foreground">Pricing</a>
+          <a href="#features" className="hover:text-foreground">
+            Features
+          </a>
+          <a href="#templates" className="hover:text-foreground">
+            Templates
+          </a>
+          <a href="#dashboard" className="hover:text-foreground">
+            Dashboard
+          </a>
+          <a href="#pricing" className="hover:text-foreground">
+            Pricing
+          </a>
         </nav>
         <div className="flex items-center gap-2">
           {user ? (
             <>
               <button
                 onClick={async () => {
-                  const { data } = await supabase.from("profiles").select("username").eq("user_id", user.id).maybeSingle();
-                  navigate({ to: "/claim/$username", params: { username: data?.username ?? "yourname" } });
+                  const { data } = await supabase
+                    .from("profiles")
+                    .select("username")
+                    .eq("user_id", user.id)
+                    .maybeSingle();
+                  navigate({
+                    to: "/claim/$username",
+                    params: { username: data?.username ?? "yourname" },
+                  });
                 }}
                 className="hidden text-sm text-muted-foreground hover:text-foreground sm:block"
               >
                 Dashboard
               </button>
-              <button onClick={() => signOut()} className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-3 py-2 text-sm text-muted-foreground hover:text-foreground">
+              <button
+                onClick={() => signOut()}
+                className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-3 py-2 text-sm text-muted-foreground hover:text-foreground"
+              >
                 <LogOut className="h-3 w-3" /> Sign out
               </button>
             </>
           ) : (
             <>
-              <Link to="/auth" className="hidden text-sm text-muted-foreground hover:text-foreground sm:block">Log in</Link>
-              <Link to="/auth" className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">
+              <Link
+                to="/auth"
+                className="hidden text-sm text-muted-foreground hover:text-foreground sm:block"
+              >
+                Log in
+              </Link>
+              <Link
+                to="/auth"
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+              >
                 Claim your link
               </Link>
             </>
@@ -158,7 +241,13 @@ function Nav() {
 }
 
 /* ---------- Phone mockup primitives ---------- */
-export function PhoneFrame({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+export function PhoneFrame({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <div className={`relative mx-auto w-[260px] shrink-0 ${className}`}>
       <div className="relative rounded-[2.5rem] border-[6px] border-[#0a0a0a] bg-black p-1 shadow-2xl shadow-black/60">
@@ -172,8 +261,20 @@ export function PhoneFrame({ children, className = "" }: { children: React.React
 }
 
 function LinkRow({
-  icon, label, sub, color = "bg-white", text = "text-zinc-900", subText = "text-zinc-500",
-}: { icon: React.ReactNode; label: string; sub?: string; color?: string; text?: string; subText?: string }) {
+  icon,
+  label,
+  sub,
+  color = "bg-white",
+  text = "text-zinc-900",
+  subText = "text-zinc-500",
+}: {
+  icon: React.ReactNode;
+  label: string;
+  sub?: string;
+  color?: string;
+  text?: string;
+  subText?: string;
+}) {
   return (
     <div className={`flex items-center gap-2.5 rounded-xl ${color} px-2.5 py-2 shadow-sm`}>
       <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white text-zinc-900">
@@ -190,7 +291,9 @@ function LinkRow({
 
 function PayBadge({ label, bg }: { label: string; bg: string }) {
   return (
-    <div className={`flex h-7 items-center justify-center rounded-md px-1.5 text-[9px] font-medium text-white ${bg}`}>
+    <div
+      className={`flex h-7 items-center justify-center rounded-md px-1.5 text-[9px] font-medium text-white ${bg}`}
+    >
       {label}
     </div>
   );
@@ -199,7 +302,11 @@ function PayBadge({ label, bg }: { label: string; bg: string }) {
 function PayRow({ labelClass = "text-zinc-500" }: { labelClass?: string }) {
   return (
     <div className="mt-2">
-      <div className={`text-center text-[9px] font-semibold uppercase tracking-wider ${labelClass}`}>We Accept</div>
+      <div
+        className={`text-center text-[9px] font-semibold uppercase tracking-wider ${labelClass}`}
+      >
+        We Accept
+      </div>
       <div className="mt-1.5 grid grid-cols-4 gap-1.5">
         <PayBadge label="GCash" bg="bg-[#007cf0]" />
         <PayBadge label="maya" bg="bg-[#00b16a]" />
@@ -212,7 +319,10 @@ function PayRow({ labelClass = "text-zinc-500" }: { labelClass?: string }) {
 
 /* ---------- Templates (export so claim page can reuse) ---------- */
 
-export function ClassicPinoyPhone({ name = "KATWA FINDS", bio = "Trusted deals. Fast replies.\nProudly Filipino ❤️" }: { name?: string; bio?: string } = {}) {
+export function ClassicPinoyPhone({
+  name = "KATWA FINDS",
+  bio = "Trusted deals. Fast replies.\nProudly Filipino ❤️",
+}: { name?: string; bio?: string } = {}) {
   return (
     <PhoneFrame>
       <div className="absolute inset-0 bg-white">
@@ -224,17 +334,43 @@ export function ClassicPinoyPhone({ name = "KATWA FINDS", bio = "Trusted deals. 
         <div className="relative pt-10 px-3">
           <div className="mx-auto h-20 w-20 rounded-full border-4 border-white bg-gradient-to-br from-pink-200 to-pink-400 shadow-lg" />
           <div className="mt-2 text-center">
-            <div className="inline-block rounded-full bg-[#10b981] px-2 py-0.5 text-[8px] font-semibold text-white">● Online</div>
+            <div className="inline-block rounded-full bg-[#10b981] px-2 py-0.5 text-[8px] font-semibold text-white">
+              ● Online
+            </div>
             <h3 className="mt-1 text-sm font-semibold tracking-tight text-zinc-900">{name}</h3>
             <p className="mt-0.5 whitespace-pre-line text-[9px] text-zinc-600">{bio}</p>
           </div>
           <div className="mt-3 space-y-1.5">
-            <LinkRow icon={<MessageCircle className="h-4 w-4 text-[#0084ff]" />} label="Message on Messenger" color="bg-[#0084ff]/10" />
-            <LinkRow icon={<MessageCircle className="h-4 w-4 text-[#25d366]" />} label="WhatsApp" color="bg-[#25d366]/15" />
-            <LinkRow icon={<ShoppingBag className="h-4 w-4 text-[#ee4d2d]" />} label="Shopee Store" color="bg-[#ee4d2d]/15" />
-            <LinkRow icon={<Music2 className="h-4 w-4" />} label="TikTok Shop" color="bg-zinc-100" />
-            <LinkRow icon={<Facebook className="h-4 w-4 text-[#1877f2]" />} label="Facebook Page" color="bg-[#1877f2]/10" />
-            <LinkRow icon={<Instagram className="h-4 w-4 text-[#e1306c]" />} label="Instagram" color="bg-gradient-to-r from-[#fdcb52]/30 to-[#e1306c]/20" />
+            <LinkRow
+              icon={<MessageCircle className="h-4 w-4 text-[#0084ff]" />}
+              label="Message on Messenger"
+              color="bg-[#0084ff]/10"
+            />
+            <LinkRow
+              icon={<MessageCircle className="h-4 w-4 text-[#25d366]" />}
+              label="WhatsApp"
+              color="bg-[#25d366]/15"
+            />
+            <LinkRow
+              icon={<ShoppingBag className="h-4 w-4 text-[#ee4d2d]" />}
+              label="Shopee Store"
+              color="bg-[#ee4d2d]/15"
+            />
+            <LinkRow
+              icon={<Music2 className="h-4 w-4" />}
+              label="TikTok Shop"
+              color="bg-zinc-100"
+            />
+            <LinkRow
+              icon={<Facebook className="h-4 w-4 text-[#1877f2]" />}
+              label="Facebook Page"
+              color="bg-[#1877f2]/10"
+            />
+            <LinkRow
+              icon={<Instagram className="h-4 w-4 text-[#e1306c]" />}
+              label="Instagram"
+              color="bg-gradient-to-r from-[#fdcb52]/30 to-[#e1306c]/20"
+            />
           </div>
           <PayRow />
         </div>
@@ -247,19 +383,31 @@ function SellerPhone() {
   return (
     <PhoneFrame>
       <div className="absolute inset-0 bg-[#fff6e3]">
-        <div className="absolute left-2 top-8 z-10 rounded-md bg-[#fb923c] px-1.5 py-0.5 text-[8px] font-medium text-white rotate-[-8deg]">BEST<br/>SELLER</div>
+        <div className="absolute left-2 top-8 z-10 rounded-md bg-[#fb923c] px-1.5 py-0.5 text-[8px] font-medium text-white rotate-[-8deg]">
+          BEST
+          <br />
+          SELLER
+        </div>
         <div className="relative pt-10 px-3">
           <div className="mx-auto grid h-20 w-20 place-items-center rounded-full border-4 border-white bg-[#fb923c] shadow-lg">
             <ShoppingBag className="h-9 w-9 text-white" />
           </div>
           <div className="mt-2 text-center">
-            <div className="inline-block rounded-full bg-[#10b981] px-2 py-0.5 text-[8px] font-semibold text-white">● Online</div>
+            <div className="inline-block rounded-full bg-[#10b981] px-2 py-0.5 text-[8px] font-semibold text-white">
+              ● Online
+            </div>
             <h3 className="mt-1 text-sm font-semibold text-zinc-900">KATWA FINDS</h3>
-            <p className="mt-0.5 text-[9px] text-zinc-600">Budol finds • Fast response<br/>Trusted seller ⭐</p>
+            <p className="mt-0.5 text-[9px] text-zinc-600">
+              Budol finds • Fast response
+              <br />
+              Trusted seller ⭐
+            </p>
           </div>
           <div className="mt-2 rounded-xl bg-white p-2 shadow-sm">
             <div className="flex gap-2">
-              <div className="grid h-14 w-14 shrink-0 place-items-center rounded-lg bg-pink-100 text-pink-500 text-[8px] font-medium">FEATURED</div>
+              <div className="grid h-14 w-14 shrink-0 place-items-center rounded-lg bg-pink-100 text-pink-500 text-[8px] font-medium">
+                FEATURED
+              </div>
               <div className="min-w-0 flex-1">
                 <div className="text-[10px] font-medium text-zinc-900">Mini Fan</div>
                 <ul className="mt-0.5 space-y-0.5 text-[8px] text-zinc-600">
@@ -271,9 +419,15 @@ function SellerPhone() {
             </div>
           </div>
           <div className="mt-2 space-y-1">
-            <LinkRow icon={<MessageCircle className="h-4 w-4 text-[#0084ff]" />} label="Message on Messenger" />
+            <LinkRow
+              icon={<MessageCircle className="h-4 w-4 text-[#0084ff]" />}
+              label="Message on Messenger"
+            />
             <LinkRow icon={<MessageCircle className="h-4 w-4 text-[#25d366]" />} label="WhatsApp" />
-            <LinkRow icon={<ShoppingBag className="h-4 w-4 text-[#ee4d2d]" />} label="Shopee Store" />
+            <LinkRow
+              icon={<ShoppingBag className="h-4 w-4 text-[#ee4d2d]" />}
+              label="Shopee Store"
+            />
             <LinkRow icon={<Music2 className="h-4 w-4" />} label="TikTok Shop" />
             <LinkRow icon={<Store className="h-4 w-4 text-[#a020f0]" />} label="Lazada Store" />
           </div>
@@ -291,24 +445,68 @@ function CreatorPhone() {
         <div className="relative pt-10 px-3">
           <div className="mx-auto h-20 w-20 rounded-full border-4 border-white bg-gradient-to-br from-amber-200 to-amber-400 shadow-lg" />
           <div className="mt-2 text-center">
-            <div className="inline-block rounded-full bg-[#10b981] px-2 py-0.5 text-[8px] font-semibold text-white">● Online</div>
-            <h3 className="mt-1 flex items-center justify-center gap-1 text-sm font-semibold text-white">JUAN VLOGS <BadgeCheck className="h-3 w-3 text-sky-400" /></h3>
-            <p className="mt-0.5 text-[9px] text-white/75">Creating videos that inspire.<br/>Vlogs • Travel • Lifestyle</p>
+            <div className="inline-block rounded-full bg-[#10b981] px-2 py-0.5 text-[8px] font-semibold text-white">
+              ● Online
+            </div>
+            <h3 className="mt-1 flex items-center justify-center gap-1 text-sm font-semibold text-white">
+              JUAN VLOGS <BadgeCheck className="h-3 w-3 text-sky-400" />
+            </h3>
+            <p className="mt-0.5 text-[9px] text-white/75">
+              Creating videos that inspire.
+              <br />
+              Vlogs • Travel • Lifestyle
+            </p>
           </div>
           <div className="mt-2 relative h-20 overflow-hidden rounded-xl bg-gradient-to-br from-fuchsia-700 via-purple-700 to-pink-600">
-            <div className="absolute inset-0 grid place-items-center"><Play className="h-7 w-7 fill-white text-white" /></div>
-            <div className="absolute bottom-1 left-2 text-[8px] font-semibold text-white">NEW VLOG: JAPAN ADVENTURE</div>
+            <div className="absolute inset-0 grid place-items-center">
+              <Play className="h-7 w-7 fill-white text-white" />
+            </div>
+            <div className="absolute bottom-1 left-2 text-[8px] font-semibold text-white">
+              NEW VLOG: JAPAN ADVENTURE
+            </div>
           </div>
           <div className="mt-2 space-y-1">
-            <LinkRow icon={<Youtube className="h-4 w-4 text-[#ff0000]" />} label="YouTube Channel" color="bg-[#ff0000]/20" text="text-white" subText="text-white/60" />
-            <LinkRow icon={<Music2 className="h-4 w-4" />} label="TikTok" color="bg-white/10" text="text-white" subText="text-white/60" />
-            <LinkRow icon={<Instagram className="h-4 w-4 text-[#e1306c]" />} label="Instagram" color="bg-gradient-to-r from-[#fdcb52]/40 to-[#e1306c]/40" text="text-white" subText="text-white/60" />
-            <LinkRow icon={<Facebook className="h-4 w-4 text-[#1877f2]" />} label="Facebook Page" color="bg-[#1877f2]/25" text="text-white" subText="text-white/60" />
-            <LinkRow icon={<Mail className="h-4 w-4" />} label="Business Inquiries" color="bg-white/10" text="text-white" subText="text-white/60" />
+            <LinkRow
+              icon={<Youtube className="h-4 w-4 text-[#ff0000]" />}
+              label="YouTube Channel"
+              color="bg-[#ff0000]/20"
+              text="text-white"
+              subText="text-white/60"
+            />
+            <LinkRow
+              icon={<Music2 className="h-4 w-4" />}
+              label="TikTok"
+              color="bg-white/10"
+              text="text-white"
+              subText="text-white/60"
+            />
+            <LinkRow
+              icon={<Instagram className="h-4 w-4 text-[#e1306c]" />}
+              label="Instagram"
+              color="bg-gradient-to-r from-[#fdcb52]/40 to-[#e1306c]/40"
+              text="text-white"
+              subText="text-white/60"
+            />
+            <LinkRow
+              icon={<Facebook className="h-4 w-4 text-[#1877f2]" />}
+              label="Facebook Page"
+              color="bg-[#1877f2]/25"
+              text="text-white"
+              subText="text-white/60"
+            />
+            <LinkRow
+              icon={<Mail className="h-4 w-4" />}
+              label="Business Inquiries"
+              color="bg-white/10"
+              text="text-white"
+              subText="text-white/60"
+            />
           </div>
           <div className="mt-2 flex justify-center gap-2">
             {[Youtube, Music2, Instagram, Facebook].map((I, i) => (
-              <div key={i} className="grid h-7 w-7 place-items-center rounded-full bg-white/10"><I className="h-3.5 w-3.5 text-white" /></div>
+              <div key={i} className="grid h-7 w-7 place-items-center rounded-full bg-white/10">
+                <I className="h-3.5 w-3.5 text-white" />
+              </div>
             ))}
           </div>
         </div>
@@ -327,16 +525,42 @@ function BusinessPhone() {
             <Coffee className="h-9 w-9 text-emerald-700" />
           </div>
           <div className="mt-2 text-center">
-            <div className="inline-block rounded-full bg-emerald-500 px-2 py-0.5 text-[8px] font-semibold text-white">Open Now</div>
+            <div className="inline-block rounded-full bg-emerald-500 px-2 py-0.5 text-[8px] font-semibold text-white">
+              Open Now
+            </div>
             <h3 className="mt-1 text-sm font-semibold text-white">BEAN &amp; BREW</h3>
-            <p className="mt-0.5 text-[9px] text-white/85">Good coffee. Good food.<br/>Good vibes.</p>
+            <p className="mt-0.5 text-[9px] text-white/85">
+              Good coffee. Good food.
+              <br />
+              Good vibes.
+            </p>
           </div>
           <div className="mt-3 space-y-1.5">
-            <LinkRow icon={<FileText className="h-4 w-4 text-emerald-700" />} label="View Our Menu" sub="Coffee, meals & pastries" />
-            <LinkRow icon={<Calendar className="h-4 w-4 text-emerald-700" />} label="Book a Table" sub="Reserve your spot" />
-            <LinkRow icon={<MessageCircle className="h-4 w-4 text-[#0084ff]" />} label="Message Us" sub="We're here to help!" />
-            <LinkRow icon={<MapPin className="h-4 w-4 text-rose-500" />} label="Location" sub="Find us here" />
-            <LinkRow icon={<Star className="h-4 w-4 text-amber-500" />} label="Customer Reviews" sub="See what they say" />
+            <LinkRow
+              icon={<FileText className="h-4 w-4 text-emerald-700" />}
+              label="View Our Menu"
+              sub="Coffee, meals & pastries"
+            />
+            <LinkRow
+              icon={<Calendar className="h-4 w-4 text-emerald-700" />}
+              label="Book a Table"
+              sub="Reserve your spot"
+            />
+            <LinkRow
+              icon={<MessageCircle className="h-4 w-4 text-[#0084ff]" />}
+              label="Message Us"
+              sub="We're here to help!"
+            />
+            <LinkRow
+              icon={<MapPin className="h-4 w-4 text-rose-500" />}
+              label="Location"
+              sub="Find us here"
+            />
+            <LinkRow
+              icon={<Star className="h-4 w-4 text-amber-500" />}
+              label="Customer Reviews"
+              sub="See what they say"
+            />
           </div>
           <PayRow labelClass="text-white/80" />
         </div>
@@ -355,16 +579,42 @@ function ResortPhone() {
             <Sun className="h-9 w-9 text-sky-500" />
           </div>
           <div className="mt-2 text-center">
-            <div className="inline-block rounded-full bg-emerald-500 px-2 py-0.5 text-[8px] font-semibold text-white">● Online</div>
+            <div className="inline-block rounded-full bg-emerald-500 px-2 py-0.5 text-[8px] font-semibold text-white">
+              ● Online
+            </div>
             <h3 className="mt-1 text-sm font-semibold text-white">AZUL BEACH RESORT</h3>
-            <p className="mt-0.5 text-[9px] text-white/90">Your escape. Your paradise.<br/>San Vicente, Palawan</p>
+            <p className="mt-0.5 text-[9px] text-white/90">
+              Your escape. Your paradise.
+              <br />
+              San Vicente, Palawan
+            </p>
           </div>
           <div className="mt-3 space-y-1.5">
-            <LinkRow icon={<Calendar className="h-4 w-4 text-sky-500" />} label="Book Your Stay" sub="Best rate guaranteed" />
-            <LinkRow icon={<Sun className="h-4 w-4 text-amber-500" />} label="Island Hopping Tours" sub="Explore beautiful places" />
-            <LinkRow icon={<MessageCircle className="h-4 w-4 text-[#25d366]" />} label="WhatsApp Concierge" sub="We're here for you" />
-            <LinkRow icon={<MapPin className="h-4 w-4 text-rose-500" />} label="Directions" sub="How to get here" />
-            <LinkRow icon={<Instagram className="h-4 w-4 text-[#e1306c]" />} label="Instagram" sub="See our paradise" />
+            <LinkRow
+              icon={<Calendar className="h-4 w-4 text-sky-500" />}
+              label="Book Your Stay"
+              sub="Best rate guaranteed"
+            />
+            <LinkRow
+              icon={<Sun className="h-4 w-4 text-amber-500" />}
+              label="Island Hopping Tours"
+              sub="Explore beautiful places"
+            />
+            <LinkRow
+              icon={<MessageCircle className="h-4 w-4 text-[#25d366]" />}
+              label="WhatsApp Concierge"
+              sub="We're here for you"
+            />
+            <LinkRow
+              icon={<MapPin className="h-4 w-4 text-rose-500" />}
+              label="Directions"
+              sub="How to get here"
+            />
+            <LinkRow
+              icon={<Instagram className="h-4 w-4 text-[#e1306c]" />}
+              label="Instagram"
+              sub="See our paradise"
+            />
           </div>
           <PayRow labelClass="text-white/80" />
         </div>
@@ -382,16 +632,42 @@ function PatrioticPhone() {
         <div className="relative pt-10 px-3">
           <div className="mx-auto h-20 w-20 rounded-full border-4 border-white bg-gradient-to-br from-amber-200 to-amber-500 shadow-lg" />
           <div className="mt-2 text-center">
-            <div className="inline-block rounded-full bg-emerald-500 px-2 py-0.5 text-[8px] font-semibold text-white">● Online</div>
+            <div className="inline-block rounded-full bg-emerald-500 px-2 py-0.5 text-[8px] font-semibold text-white">
+              ● Online
+            </div>
             <h3 className="mt-1 text-sm font-semibold text-white">PINOY CREATIVES</h3>
-            <p className="mt-0.5 text-[9px] text-white/85">Designs that stand out.<br/>Proudly Filipino 🇵🇭</p>
+            <p className="mt-0.5 text-[9px] text-white/85">
+              Designs that stand out.
+              <br />
+              Proudly Filipino 🇵🇭
+            </p>
           </div>
           <div className="mt-3 space-y-1.5">
-            <LinkRow icon={<Briefcase className="h-4 w-4 text-[#0038a8]" />} label="View My Portfolio" sub="Selected works" />
-            <LinkRow icon={<Phone className="h-4 w-4 text-[#0038a8]" />} label="Book a Call" sub="Let's work together" />
-            <LinkRow icon={<FileText className="h-4 w-4 text-[#0038a8]" />} label="Services" sub="What I can do for you" />
-            <LinkRow icon={<Mail className="h-4 w-4 text-[#0038a8]" />} label="Email Me" sub="Send me a message" />
-            <LinkRow icon={<Linkedin className="h-4 w-4 text-[#0077b5]" />} label="LinkedIn" sub="Let's connect" />
+            <LinkRow
+              icon={<Briefcase className="h-4 w-4 text-[#0038a8]" />}
+              label="View My Portfolio"
+              sub="Selected works"
+            />
+            <LinkRow
+              icon={<Phone className="h-4 w-4 text-[#0038a8]" />}
+              label="Book a Call"
+              sub="Let's work together"
+            />
+            <LinkRow
+              icon={<FileText className="h-4 w-4 text-[#0038a8]" />}
+              label="Services"
+              sub="What I can do for you"
+            />
+            <LinkRow
+              icon={<Mail className="h-4 w-4 text-[#0038a8]" />}
+              label="Email Me"
+              sub="Send me a message"
+            />
+            <LinkRow
+              icon={<Linkedin className="h-4 w-4 text-[#0077b5]" />}
+              label="LinkedIn"
+              sub="Let's connect"
+            />
           </div>
         </div>
       </div>
@@ -402,14 +678,54 @@ function PatrioticPhone() {
 /* ---------- Sections ---------- */
 
 const templates = [
-  { Comp: ClassicPinoyPhone, name: "CLASSIC PINOY", color: "text-white", desc: "Clean, simple and proudly Pinoy." },
-  { Comp: SellerPhone, name: "SELLER", color: "text-amber-400", desc: "Perfect for online sellers and resellers." },
-  { Comp: CreatorPhone, name: "CREATOR", color: "text-fuchsia-400", desc: "Made for content creators and influencers." },
-  { Comp: BusinessPhone, name: "BUSINESS", color: "text-emerald-400", desc: "Great for cafes, restaurants and local shops." },
-  { Comp: ResortPhone, name: "RESORT", color: "text-sky-400", desc: "Built for resorts, hotels and travel businesses." },
-  { Comp: PatrioticPhone, name: "PATRIOTIC PINOY", color: "text-[#ff6464]", desc: "Show your pride with Philippine colors and sun." },
-  { Comp: PinoyFitnessPhone, name: "PINOY FITNESS", color: "text-[#ffcf2a]", desc: "Bold flag-color design for coaches and athletes." },
-  { Comp: IslaCreatorPhone, name: "ISLA CREATOR", color: "text-[#c92030]", desc: "Warm cream aesthetic for lifestyle creators." },
+  {
+    Comp: ClassicPinoyPhone,
+    name: "CLASSIC PINOY",
+    color: "text-white",
+    desc: "Clean, simple and proudly Pinoy.",
+  },
+  {
+    Comp: SellerPhone,
+    name: "SELLER",
+    color: "text-amber-400",
+    desc: "Perfect for online sellers and resellers.",
+  },
+  {
+    Comp: CreatorPhone,
+    name: "CREATOR",
+    color: "text-fuchsia-400",
+    desc: "Made for content creators and influencers.",
+  },
+  {
+    Comp: BusinessPhone,
+    name: "BUSINESS",
+    color: "text-emerald-400",
+    desc: "Great for cafes, restaurants and local shops.",
+  },
+  {
+    Comp: ResortPhone,
+    name: "RESORT",
+    color: "text-sky-400",
+    desc: "Built for resorts, hotels and travel businesses.",
+  },
+  {
+    Comp: PatrioticPhone,
+    name: "PATRIOTIC PINOY",
+    color: "text-[#ff6464]",
+    desc: "Show your pride with Philippine colors and sun.",
+  },
+  {
+    Comp: PinoyFitnessPhone,
+    name: "PINOY FITNESS",
+    color: "text-[#ffcf2a]",
+    desc: "Bold flag-color design for coaches and athletes.",
+  },
+  {
+    Comp: IslaCreatorPhone,
+    name: "ISLA CREATOR",
+    color: "text-[#c92030]",
+    desc: "Warm cream aesthetic for lifestyle creators.",
+  },
 ];
 
 function Hero() {
@@ -422,20 +738,24 @@ function Hero() {
       <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:py-24">
         <div>
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Built for the Philippine market 🇵🇭
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Built for the Philippine
+            market 🇵🇭
           </div>
           <h1 className="mt-6 text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
-            One Link.<br/>
+            One Link.
+            <br />
             <span className="text-primary">All Your Channels.</span>
           </h1>
           <p className="mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
-            Built for the way Filipinos connect, chat, and shop online. Messenger, WhatsApp,
-            Shopee, Lazada, TikTok Shop, GCash — all in one beautiful page.
+            Built for the way Filipinos connect, chat, and shop online. Messenger, WhatsApp, Shopee,
+            Lazada, TikTok Shop, GCash — all in one beautiful page.
           </p>
 
           <div className="mt-8 max-w-md">
             <ClaimInline size="lg" />
-            <p className="mt-2 text-xs text-muted-foreground">Free forever. No credit card needed.</p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Free forever. No credit card needed.
+            </p>
           </div>
 
           <ul className="mt-10 grid gap-3 text-sm sm:grid-cols-2">
@@ -470,8 +790,7 @@ function TemplatesSection() {
         <div className="text-center">
           <Logo className="justify-center" />
           <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-5xl">
-            Beautiful Templates,{" "}
-            <span className="text-[#60a5fa]">Filipino</span>{" "}
+            Beautiful Templates, <span className="text-[#60a5fa]">Filipino</span>{" "}
             <span className="text-[#ef4444]">Style</span>
           </h2>
           <p className="mt-3 text-muted-foreground">Choose a template that fits your vibe. 🇵🇭</p>
@@ -519,12 +838,19 @@ function FeaturesSection() {
     <section id="features" className="relative border-t border-border/50 bg-card/30 py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="text-center">
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-5xl">Filipino-First Features</h2>
-          <p className="mt-3 text-muted-foreground">Designed for how Pinoys actually do business online.</p>
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-5xl">
+            Filipino-First Features
+          </h2>
+          <p className="mt-3 text-muted-foreground">
+            Designed for how Pinoys actually do business online.
+          </p>
         </div>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {feats.map(({ Icon, title, desc }) => (
-            <div key={title} className="group rounded-2xl border border-border/60 bg-background/60 p-6 backdrop-blur transition hover:border-primary/40 hover:bg-background">
+            <div
+              key={title}
+              className="group rounded-2xl border border-border/60 bg-background/60 p-6 backdrop-blur transition hover:border-primary/40 hover:bg-background"
+            >
               <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary/15 text-primary">
                 <Icon className="h-5 w-5" />
               </div>
@@ -553,7 +879,11 @@ function DashboardSection() {
         ["Profile Views", data.pageViews.toLocaleString(), null],
         ["Link Clicks", data.linkClicks.toLocaleString(), null],
         ["Click Through Rate", `${data.ctr}%`, null],
-        ["Top Link", data.topLink?.label ?? "—", data.topLink ? `${data.topLink.clicks} clicks` : null],
+        [
+          "Top Link",
+          data.topLink?.label ?? "—",
+          data.topLink ? `${data.topLink.clicks} clicks` : null,
+        ],
       ]
     : [
         ["Profile Views", "—", null],
@@ -576,7 +906,9 @@ function DashboardSection() {
     <section id="dashboard" className="relative border-t border-border/50 py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="text-center">
-          <h2 className="text-3xl font-semibold tracking-tight sm:text-5xl">Your dashboard, your data.</h2>
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-5xl">
+            Your dashboard, your data.
+          </h2>
           <p className="mt-3 text-muted-foreground">
             {user ? "Real clicks from your live page." : "Track every click and grow your reach."}
           </p>
@@ -597,7 +929,10 @@ function DashboardSection() {
                 ].map(([n, I, active]) => {
                   const Icon = I as typeof BarChart3;
                   return (
-                    <div key={n as string} className={`flex items-center gap-2 rounded-lg px-3 py-2 ${active ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"}`}>
+                    <div
+                      key={n as string}
+                      className={`flex items-center gap-2 rounded-lg px-3 py-2 ${active ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                    >
                       <Icon className="h-4 w-4" />
                       <span>{n as string}</span>
                     </div>
@@ -609,7 +944,9 @@ function DashboardSection() {
             <div className="p-6 sm:p-8">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-medium">Overview</h3>
-                <div className="rounded-lg border border-border px-3 py-1.5 text-xs text-muted-foreground">Last 7 Days</div>
+                <div className="rounded-lg border border-border px-3 py-1.5 text-xs text-muted-foreground">
+                  Last 7 Days
+                </div>
               </div>
 
               {!user && (
@@ -625,7 +962,10 @@ function DashboardSection() {
 
               <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {stats.map(([label, val, sub]) => (
-                  <div key={label as string} className="rounded-xl border border-border bg-card/50 p-4">
+                  <div
+                    key={label as string}
+                    className="rounded-xl border border-border bg-card/50 p-4"
+                  >
                     <div className="text-xs text-muted-foreground">{label}</div>
                     <div className="mt-1 truncate text-2xl font-semibold tracking-tight">{val}</div>
                     {sub && <div className="mt-1 text-xs text-muted-foreground">{sub}</div>}
@@ -648,13 +988,16 @@ function DashboardSection() {
                           <Icon className="h-4 w-4 text-muted-foreground" />
                           <span className="flex-1 truncate">{tl.label}</span>
                           <div className="h-1.5 w-24 overflow-hidden rounded-full bg-muted">
-                            <div className="h-full bg-primary" style={{ width: `${(tl.clicks / maxC) * 100}%` }} />
+                            <div
+                              className="h-full bg-primary"
+                              style={{ width: `${(tl.clicks / maxC) * 100}%` }}
+                            />
                           </div>
                           <span className="w-12 text-right font-semibold">{tl.clicks}</span>
                         </li>
                       );
                     })}
-                    {(!data?.topLinks?.length) && (
+                    {!data?.topLinks?.length && (
                       <li className="text-xs text-muted-foreground">No link clicks yet.</li>
                     )}
                   </ul>
@@ -673,9 +1016,22 @@ function DashboardSection() {
                       </linearGradient>
                     </defs>
                     {areaPath && <path d={areaPath} fill="url(#g)" />}
-                    {linePath && <path d={linePath} fill="none" stroke="oklch(0.62 0.22 265)" strokeWidth="2" />}
+                    {linePath && (
+                      <path
+                        d={linePath}
+                        fill="none"
+                        stroke="oklch(0.62 0.22 265)"
+                        strokeWidth="2"
+                      />
+                    )}
                     {!linePath && (
-                      <path d="M0,90 C40,80 60,70 90,65 C130,58 160,55 190,40 C220,28 250,25 300,15" fill="none" stroke="oklch(0.62 0.22 265)" strokeWidth="2" strokeOpacity="0.3" />
+                      <path
+                        d="M0,90 C40,80 60,70 90,65 C130,58 160,55 190,40 C220,28 250,25 300,15"
+                        fill="none"
+                        stroke="oklch(0.62 0.22 265)"
+                        strokeWidth="2"
+                        strokeOpacity="0.3"
+                      />
                     )}
                   </svg>
                 </div>
@@ -694,7 +1050,8 @@ function CTASection() {
       <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
         <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-card via-card to-background p-8 sm:p-10">
           <h2 className="relative text-3xl font-semibold tracking-tight sm:text-5xl">
-            Para sa mga Pinoy, <span className="text-[#60a5fa]">para sa</span> <span className="text-[#ef4444]">Pilipino</span>. 🇵🇭
+            Para sa mga Pinoy, <span className="text-[#60a5fa]">para sa</span>{" "}
+            <span className="text-[#ef4444]">Pilipino</span>. 🇵🇭
           </h2>
           <p className="relative mt-4 text-muted-foreground">
             Claim your katwa.link before someone else does.
@@ -713,7 +1070,9 @@ function Footer() {
     <footer className="border-t border-border/50 py-10">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:px-6 md:flex-row">
         <Logo />
-        <p className="text-xs text-muted-foreground">© 2026 katwa.link — Built with ❤️ in the Philippines.</p>
+        <p className="text-xs text-muted-foreground">
+          © 2026 katwa.link — Built with ❤️ in the Philippines.
+        </p>
         <div className="flex gap-4 text-muted-foreground">
           <Facebook className="h-4 w-4" />
           <Instagram className="h-4 w-4" />
