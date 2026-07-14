@@ -1,7 +1,7 @@
 import PinoyFitnessTemplate, { type TemplateProps } from "./PinoyFitnessTemplate";
 import IslaCreatorTemplate from "./IslaCreatorTemplate";
 import ClassicPinoyTemplate from "./ClassicPinoyTemplate";
-import SellerTemplate from "./SellerTemplate";
+// SellerTemplate replaced by LikhaMarketTemplate
 import CreatorTemplate from "./CreatorTemplate";
 import BusinessTemplate from "./BusinessTemplate";
 import ResortTemplate from "./ResortTemplate";
@@ -23,7 +23,7 @@ export const TEMPLATES = [
     color: "text-amber-500",
     desc: "Marketplace-ready for online sellers and resellers.",
     swatch: ["#ffe9b8", "#f97316", "#c2410c", "#1f2544"],
-    Component: SellerTemplate,
+    Component: LikhaMarketTemplate,
   },
   {
     slug: "creator",
