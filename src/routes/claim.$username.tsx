@@ -15,7 +15,6 @@ import {
   Trash2,
   Loader2,
   Upload,
-  LogOut,
   GripVertical,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -60,7 +59,7 @@ export const Route = createFileRoute("/claim/$username")({
 function ClaimPage() {
   const { username } = Route.useParams();
   const { template } = Route.useSearch();
-  const { user, loading: authLoading, signOut } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -74,21 +73,8 @@ function ClaimPage() {
   );
   const [slugDraft, setSlugDraft] = useState(username);
 
-  // Redirect unauth users to /auth
+  // Load profile + links (no auth required — falls back to a local-only demo profile)
   useEffect(() => {
-    if (authLoading) return;
-    if (!user) {
-      navigate({
-        to: "/auth",
-        search: { next: `/claim/${username}`, pendingUsername: username },
-        replace: true,
-      });
-    }
-  }, [authLoading, user, username, navigate]);
-
-  // Load profile + links
-  useEffect(() => {
-    if (!user) return;
     let cancelled = false;
     (async () => {
       setLoading(true);
@@ -101,15 +87,10 @@ function ClaimPage() {
 
       if (cancelled) return;
 
-      if (p && p.user_id !== user.id) {
-        setError("This link belongs to someone else.");
-        setLoading(false);
-        return;
-      }
-
       let prof = p as Profile | null;
-      if (!prof) {
-        // Try to create; user is signed in, username is free.
+
+      // If signed in and no profile exists, create one. Otherwise use an in-memory demo profile.
+      if (!prof && user) {
         const { data: created, error: insErr } = await supabase
           .from("profiles")
           .insert({
@@ -123,24 +104,39 @@ function ClaimPage() {
         if (insErr) {
           if (insErr.code === "23505") setError("That username is already taken.");
           else setError(insErr.message);
-          setLoading(false);
-          return;
+        } else {
+          prof = created as Profile;
         }
-        prof = created as Profile;
+      }
+
+      if (!prof) {
+        prof = {
+          id: "local",
+          user_id: "local",
+          username,
+          display_name: username,
+          bio: "",
+          status: "online",
+          template: template ?? "classic-pinoy",
+          avatar_url: null,
+          published: false,
+        };
       }
 
       setProfile(prof);
       setSlugDraft(prof.username);
 
-      const { data: ls } = await supabase
-        .from("links")
-        .select("*")
-        .eq("profile_id", prof.id)
-        .order("position");
-      if (!cancelled) {
-        setLinks((ls ?? []) as LinkRow[]);
-        setLoading(false);
+      if (prof.id !== "local") {
+        const { data: ls } = await supabase
+          .from("links")
+          .select("*")
+          .eq("profile_id", prof.id)
+          .order("position");
+        if (!cancelled) setLinks((ls ?? []) as LinkRow[]);
+      } else {
+        setLinks([]);
       }
+      if (!cancelled) setLoading(false);
     })();
     return () => {
       cancelled = true;
@@ -364,12 +360,6 @@ function ClaimPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => signOut().then(() => navigate({ to: "/" }))}
-              className="hidden text-xs text-muted-foreground hover:text-foreground sm:inline-flex sm:items-center sm:gap-1"
-            >
-              <LogOut className="h-3 w-3" /> Sign out
-            </button>
             <button
               onClick={() => setPreviewMode(true)}
               className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-sm hover:bg-muted"
