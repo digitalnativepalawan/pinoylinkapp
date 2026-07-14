@@ -6,6 +6,7 @@ import CreatorTemplate from "./CreatorTemplate";
 import BusinessTemplate from "./BusinessTemplate";
 import ResortTemplate from "./ResortTemplate";
 import PatrioticPinoyTemplate from "./PatrioticPinoyTemplate";
+import LikhaMarketTemplate from "./LikhaMarketTemplate";
 
 export const TEMPLATES = [
   {
@@ -19,9 +20,9 @@ export const TEMPLATES = [
   {
     slug: "seller",
     label: "SELLER",
-    color: "text-[#0038a8]",
-    desc: "Festive Filipino marketplace vibe with tribal patterns and flag colors.",
-    swatch: ["#0038a8", "#ce1126", "#fcd116", "#f5f0e6"],
+    color: "text-amber-500",
+    desc: "Marketplace-ready for online sellers and resellers.",
+    swatch: ["#ffe9b8", "#f97316", "#c2410c", "#1f2544"],
     Component: SellerTemplate,
   },
   {
@@ -71,6 +72,14 @@ export const TEMPLATES = [
     desc: "Warm cream aesthetic for lifestyle creators.",
     swatch: ["#f7f1e6", "#0a2e6b", "#c92030", "#e8b93a"],
     Component: IslaCreatorTemplate,
+  },
+  {
+    slug: "likha-market",
+    label: "LIKHA MARKET",
+    color: "text-[#f8c62c]",
+    desc: "A vibrant Filipino market template for local sellers and makers.",
+    swatch: ["#063f8f", "#d61f2c", "#f8c62c", "#fff7e8"],
+    Component: LikhaMarketTemplate,
   },
 ] as const;
 
@@ -147,14 +156,14 @@ const SEED: Record<TemplateSlug, SeedSpec> = {
     ],
   },
   seller: {
-    display_name: "Likha Market",
-    bio: "Proudly Filipino goods, stories, and everyday finds.",
+    display_name: "Katwa Finds",
+    bio: "Budol finds • Fast response • Trusted seller ⭐",
     links: [
-      { label: "Shop Local", icon: "ShoppingBag" },
-      { label: "Featured Products", icon: "Star" },
-      { label: "Our Story", icon: "Globe" },
-      { label: "Join the Community", icon: "Users" },
-      { label: "Message Us", icon: "MessageCircle" },
+      { label: "Message on Messenger", icon: "MessageCircle" },
+      { label: "Shopee Store", icon: "ShoppingBag" },
+      { label: "TikTok Shop", icon: "Music2" },
+      { label: "Lazada Store", icon: "Store" },
+      { label: "WhatsApp", icon: "MessageCircle" },
     ],
   },
   creator: {
@@ -223,6 +232,17 @@ const SEED: Record<TemplateSlug, SeedSpec> = {
       { label: "Support Me", icon: "Star" },
     ],
   },
+  "likha-market": {
+    display_name: "Likha Market",
+    bio: "Proudly Filipino goods, stories, and everyday finds.",
+    links: [
+      { label: "Shop Local", icon: "ShoppingBag" },
+      { label: "Featured Products", icon: "Sparkles" },
+      { label: "Our Story", icon: "Home" },
+      { label: "Join the Community", icon: "Users" },
+      { label: "Message Us", icon: "MessageCircle" },
+    ],
+  },
 };
 
 function buildSeed(slug: TemplateSlug): TemplateProps {
@@ -265,3 +285,4 @@ export const ResortPhone = makePhone("resort");
 export const PatrioticPhone = makePhone("patriotic-pinoy");
 export const PinoyFitnessPhone = makePhone("pinoy-fitness");
 export const IslaCreatorPhone = makePhone("isla-creator");
+export const LikhaMarketPhone = makePhone("likha-market");

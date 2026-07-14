@@ -21,6 +21,8 @@ import {
   CreditCard,
   QrCode,
   Users,
+  Sparkles,
+  Home,
 } from "lucide-react";
 
 export const ICONS = {
@@ -46,6 +48,8 @@ export const ICONS = {
   CreditCard,
   QrCode,
   Users,
+  Sparkles,
+  Home,
 } as const;
 
 export type IconName = keyof typeof ICONS;
@@ -71,4 +75,6 @@ export const ICON_OPTIONS: { name: IconName; label: string }[] = [
   { name: "Link2", label: "Link" },
   { name: "Users", label: "Community" },
   { name: "Star", label: "Featured" },
+  { name: "Sparkles", label: "Featured Alt" },
+  { name: "Home", label: "Story" },
 ];
