@@ -22,7 +22,6 @@ import { useAuth } from "@/lib/auth";
 import { getIcon, ICON_OPTIONS, type IconName } from "@/lib/icons";
 import { TEMPLATES, TemplatePhonePreview, renderTemplate } from "@/components/templates";
 
-
 type Profile = {
   id: string;
   user_id: string;
@@ -143,7 +142,6 @@ function ClaimPage() {
       cancelled = true;
     };
   }, [user, username, template]);
-
 
   // Debounced username availability
   useEffect(() => {
@@ -362,7 +360,6 @@ function ClaimPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-
             <button
               onClick={() => setPreviewMode(true)}
               className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-sm hover:bg-muted"

@@ -407,10 +407,7 @@ function DashboardSection() {
 
               <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {stats.map(([label, val, sub]) => (
-                  <div
-                    key={label}
-                    className="rounded-xl border border-border bg-card/50 p-4"
-                  >
+                  <div key={label} className="rounded-xl border border-border bg-card/50 p-4">
                     <div className="text-xs text-muted-foreground">{label}</div>
                     <div className="mt-1 truncate text-2xl font-semibold tracking-tight">{val}</div>
                     {sub && <div className="mt-1 text-xs text-muted-foreground">{sub}</div>}
