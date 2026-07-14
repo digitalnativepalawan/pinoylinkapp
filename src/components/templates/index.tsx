@@ -23,7 +23,7 @@ export const TEMPLATES = [
     color: "text-amber-500",
     desc: "Marketplace-ready for online sellers and resellers.",
     swatch: ["#ffe9b8", "#f97316", "#c2410c", "#1f2544"],
-    Component: SellerTemplate,
+    Component: LikhaMarketTemplate,
   },
   {
     slug: "creator",
