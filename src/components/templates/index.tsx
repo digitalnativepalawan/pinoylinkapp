@@ -19,9 +19,9 @@ export const TEMPLATES = [
   {
     slug: "seller",
     label: "SELLER",
-    color: "text-amber-500",
-    desc: "Marketplace-ready for online sellers and resellers.",
-    swatch: ["#ffe9b8", "#f97316", "#c2410c", "#1f2544"],
+    color: "text-[#0038a8]",
+    desc: "Festive Filipino marketplace vibe with tribal patterns and flag colors.",
+    swatch: ["#0038a8", "#ce1126", "#fcd116", "#f5f0e6"],
     Component: SellerTemplate,
   },
   {
@@ -147,14 +147,14 @@ const SEED: Record<TemplateSlug, SeedSpec> = {
     ],
   },
   seller: {
-    display_name: "Katwa Finds",
-    bio: "Budol finds • Fast response • Trusted seller ⭐",
+    display_name: "Likha Market",
+    bio: "Proudly Filipino goods, stories, and everyday finds.",
     links: [
-      { label: "Message on Messenger", icon: "MessageCircle" },
-      { label: "Shopee Store", icon: "ShoppingBag" },
-      { label: "TikTok Shop", icon: "Music2" },
-      { label: "Lazada Store", icon: "Store" },
-      { label: "WhatsApp", icon: "MessageCircle" },
+      { label: "Shop Local", icon: "ShoppingBag" },
+      { label: "Featured Products", icon: "Star" },
+      { label: "Our Story", icon: "Globe" },
+      { label: "Join the Community", icon: "Users" },
+      { label: "Message Us", icon: "MessageCircle" },
     ],
   },
   creator: {
