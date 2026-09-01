@@ -147,7 +147,8 @@ function Nav() {
         <div className="flex items-center gap-2">
           <Link
             to="/claim/$username"
-            params={{ username: "yourname" }}
+            params={{ username: slug }}
+
             className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
           >
             Claim your link
