@@ -184,53 +184,69 @@ export function PhoneFrame({
 const templates = [
   {
     Comp: ClassicPinoyPhone,
+    slug: "classic-pinoy",
     name: "CLASSIC PINOY",
     color: "text-white",
     desc: "Clean, simple and proudly Pinoy.",
   },
   {
     Comp: SellerPhone,
+    slug: "seller",
     name: "SELLER",
     color: "text-amber-400",
     desc: "Perfect for online sellers and resellers.",
   },
   {
     Comp: CreatorPhone,
+    slug: "creator",
     name: "CREATOR",
     color: "text-fuchsia-400",
     desc: "Made for content creators and influencers.",
   },
   {
     Comp: BusinessPhone,
+    slug: "business",
     name: "BUSINESS",
     color: "text-emerald-400",
     desc: "Great for cafes, restaurants and local shops.",
   },
   {
     Comp: ResortPhone,
+    slug: "resort",
     name: "RESORT",
     color: "text-sky-400",
     desc: "Built for resorts, hotels and travel businesses.",
   },
   {
     Comp: PatrioticPhone,
+    slug: "patriotic-pinoy",
     name: "PATRIOTIC PINOY",
     color: "text-[#ff6464]",
     desc: "Show your pride with Philippine colors and sun.",
   },
   {
     Comp: PinoyFitnessPhone,
+    slug: "pinoy-fitness",
     name: "PINOY FITNESS",
     color: "text-[#ffcf2a]",
     desc: "Bold flag-color design for coaches and athletes.",
   },
   {
     Comp: IslaCreatorPhone,
+    slug: "isla-creator",
     name: "ISLA CREATOR",
     color: "text-[#c92030]",
     desc: "Warm cream aesthetic for lifestyle creators.",
   },
+  {
+    Comp: LikhaMarketPhone,
+    slug: "likha-market",
+    name: "LIKHA MARKET",
+    color: "text-[#f8c62c]",
+    desc: "Vibrant Filipino market look for local sellers and makers.",
+  },
 ];
+
 
 function Hero() {
   return (
