@@ -17,15 +17,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     const { data: sub } = supabase.auth.onAuthStateChange((_evt, s) => {
       setSession(s);
     });
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      let s = data.session;
+      // No login UI in this app — every visitor silently gets an anonymous
+      // session so their profile/link edits actually persist.
+      if (!s) {
+        const { data: anon } = await supabase.auth.signInAnonymously();
+        s = anon.session ?? null;
+      }
+      if (cancelled) return;
+      setSession(s);
       setLoading(false);
-    });
-    return () => sub.subscription.unsubscribe();
+    })();
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
   }, []);
+
 
   const value: AuthCtx = {
     user: session?.user ?? null,

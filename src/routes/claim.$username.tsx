@@ -73,9 +73,11 @@ function ClaimPage() {
   );
   const [slugDraft, setSlugDraft] = useState(username);
 
-  // Load profile + links (no auth required — falls back to a local-only demo profile)
+  // Load profile + links. A silent anonymous session is created by AuthProvider,
+  // so every visitor has a real user_id and all edits persist.
   useEffect(() => {
     let cancelled = false;
+    if (authLoading) return;
     (async () => {
       setLoading(true);
       setError(null);
@@ -89,8 +91,19 @@ function ClaimPage() {
 
       let prof = p as Profile | null;
 
-      // If signed in and no profile exists, create one. Otherwise use an in-memory demo profile.
-      if (!prof && user) {
+      if (!user) {
+        setError("Couldn't start a session. Please refresh the page.");
+        setLoading(false);
+        return;
+      }
+
+      if (prof && prof.user_id !== user.id) {
+        setError("That username is already taken. Try another one.");
+        setLoading(false);
+        return;
+      }
+
+      if (!prof) {
         const { data: created, error: insErr } = await supabase
           .from("profiles")
           .insert({
@@ -102,46 +115,38 @@ function ClaimPage() {
           .select()
           .single();
         if (insErr) {
-          if (insErr.code === "23505") setError("That username is already taken.");
-          else setError(insErr.message);
-        } else {
-          prof = created as Profile;
+          setError(
+            insErr.code === "23505" ? "That username is already taken." : insErr.message,
+          );
+          setLoading(false);
+          return;
         }
-      }
-
-      if (!prof) {
-        prof = {
-          id: "local",
-          user_id: "local",
-          username,
-          display_name: username,
-          bio: "",
-          status: "online",
-          template: template ?? "classic-pinoy",
-          avatar_url: null,
-          published: false,
-        };
+        prof = created as Profile;
+      } else if (template && template !== prof.template) {
+        const { data: updated } = await supabase
+          .from("profiles")
+          .update({ template })
+          .eq("id", prof.id)
+          .select()
+          .single();
+        if (updated) prof = updated as Profile;
       }
 
       setProfile(prof);
       setSlugDraft(prof.username);
-
-      if (prof.id !== "local") {
-        const { data: ls } = await supabase
-          .from("links")
-          .select("*")
-          .eq("profile_id", prof.id)
-          .order("position");
-        if (!cancelled) setLinks((ls ?? []) as LinkRow[]);
-      } else {
-        setLinks([]);
-      }
+      const { data: ls } = await supabase
+        .from("links")
+        .select("*")
+        .eq("profile_id", prof.id)
+        .order("position");
+      if (!cancelled) setLinks((ls ?? []) as LinkRow[]);
       if (!cancelled) setLoading(false);
     })();
     return () => {
       cancelled = true;
     };
-  }, [user, username, template]);
+  }, [user, authLoading, username, template]);
+
 
   // Debounced username availability
   useEffect(() => {
@@ -175,8 +180,13 @@ function ClaimPage() {
       if (saveTimer.current) clearTimeout(saveTimer.current);
       saveTimer.current = setTimeout(async () => {
         const { error } = await supabase.from("profiles").update(patch).eq("id", profile.id);
-        if (error && error.code === "23505") setError("That username is already taken.");
+        if (error)
+          setError(
+            error.code === "23505" ? "That username is already taken." : `Couldn't save: ${error.message}`,
+          );
+        else setError(null);
       }, 500);
+
     },
     [profile],
   );
@@ -215,12 +225,22 @@ function ClaimPage() {
       })
       .select()
       .single();
-    if (!error && data) setLinks([...links, data as LinkRow]);
+    if (error) setError(`Couldn't add link: ${error.message}`);
+    else if (data) {
+      setError(null);
+      setLinks([...links, data as LinkRow]);
+    }
   };
   const removeLink = async (id: string) => {
+    const prev = links;
     setLinks(links.filter((l) => l.id !== id));
-    await supabase.from("links").delete().eq("id", id);
+    const { error } = await supabase.from("links").delete().eq("id", id);
+    if (error) {
+      setLinks(prev);
+      setError(`Couldn't delete link: ${error.message}`);
+    }
   };
+
   const linkTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const patchLink = (id: string, patch: Partial<LinkRow>) => {
     setLinks((cur) => cur.map((l) => (l.id === id ? { ...l, ...patch } : l)));
@@ -287,7 +307,9 @@ function ClaimPage() {
     const { error: upErr } = await supabase.storage
       .from("avatars")
       .upload(path, file, { upsert: true });
-    if (!upErr) {
+    if (upErr) {
+      setError(`Couldn't upload avatar: ${upErr.message}`);
+    } else {
       const { data } = supabase.storage.from("avatars").getPublicUrl(path);
       await patchProfile({ avatar_url: data.publicUrl });
     }
@@ -296,10 +318,32 @@ function ClaimPage() {
 
   const handlePublish = async () => {
     if (!profile) return;
-    await supabase.from("profiles").update({ published: true }).eq("id", profile.id);
+    const { error: pubErr } = await supabase
+      .from("profiles")
+      .update({ published: true })
+      .eq("id", profile.id);
+    if (pubErr) {
+      setError(`Couldn't publish: ${pubErr.message}`);
+      return;
+    }
+    setError(null);
     setProfile({ ...profile, published: true });
     setShareOpen(true);
   };
+
+  const handleUnpublish = async () => {
+    if (!profile) return;
+    const { error: unErr } = await supabase
+      .from("profiles")
+      .update({ published: false })
+      .eq("id", profile.id);
+    if (unErr) {
+      setError(`Couldn't unpublish: ${unErr.message}`);
+      return;
+    }
+    setProfile({ ...profile, published: false });
+  };
+
 
   if (authLoading || loading) {
     return (
@@ -366,12 +410,21 @@ function ClaimPage() {
             >
               <Eye className="h-4 w-4" /> <span className="hidden sm:inline">Preview</span>
             </button>
+            {profile.published && (
+              <button
+                onClick={handleUnpublish}
+                className="hidden items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted sm:inline-flex"
+              >
+                Unpublish
+              </button>
+            )}
             <button
-              onClick={handlePublish}
+              onClick={profile.published ? () => setShareOpen(true) : handlePublish}
               className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
             >
-              <Rocket className="h-4 w-4" /> {profile.published ? "Update" : "Publish"}
+              <Rocket className="h-4 w-4" /> {profile.published ? "Share" : "Publish"}
             </button>
+
           </div>
         </div>
       </header>
@@ -714,6 +767,7 @@ function ShareModal({
   onView: () => void;
 }) {
   const [copied, setCopied] = useState(false);
+  const [qr, setQr] = useState<string | null>(null);
   const copy = async () => {
     await navigator.clipboard.writeText(url);
     setCopied(true);
@@ -730,6 +784,17 @@ function ShareModal({
       copy();
     }
   };
+  const makeQr = async () => {
+    if (qr) {
+      setQr(null);
+      return;
+    }
+    const QRCode = (await import("qrcode")).default;
+    setQr(
+      await QRCode.toDataURL(url, { width: 512, margin: 1, color: { dark: "#0a0a0a", light: "#ffffff" } }),
+    );
+  };
+
 
   return (
     <div
@@ -791,10 +856,27 @@ function ShareModal({
           >
             <Eye className="h-4 w-4 text-primary" /> View page
           </a>
-          <button className="flex flex-col items-center gap-1 rounded-lg border border-border bg-background py-3 text-xs hover:bg-muted">
+          <button
+            onClick={makeQr}
+            className="flex flex-col items-center gap-1 rounded-lg border border-border bg-background py-3 text-xs hover:bg-muted"
+          >
             <QrCode className="h-4 w-4 text-primary" /> QR Code
           </button>
         </div>
+
+        {qr && (
+          <div className="mt-4 flex flex-col items-center gap-2 rounded-lg border border-border bg-background p-4">
+            <img src={qr} alt="QR code for your katwa.link page" className="h-40 w-40 rounded" />
+            <a
+              href={qr}
+              download="katwa-link-qr.png"
+              className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground"
+            >
+              Download QR
+            </a>
+          </div>
+        )}
+
       </div>
     </div>
   );

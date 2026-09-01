@@ -16,7 +16,7 @@ import {
   Check,
   Sparkles,
 } from "lucide-react";
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { getIcon } from "@/lib/icons";
 import {
   ClassicPinoyPhone,
@@ -27,7 +27,26 @@ import {
   PatrioticPhone,
   PinoyFitnessPhone,
   IslaCreatorPhone,
+  LikhaMarketPhone,
 } from "@/components/templates";
+
+/** Username typed in any claim field, shared with the nav + template CTAs. */
+const ClaimNameCtx = createContext<{
+  name: string;
+  setName: (v: string) => void;
+  slug: string;
+}>({ name: "", setName: () => {}, slug: "yourname" });
+
+function toSlug(v: string) {
+  return (
+    v
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "") || "yourname"
+  );
+}
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -71,18 +90,14 @@ function Logo({ className = "" }: { className?: string }) {
 }
 
 function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
-  const [name, setName] = useState("");
+  const { name, setName, slug } = useContext(ClaimNameCtx);
   const navigate = useNavigate();
-  const slug = () =>
-    name
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, "") || "yourname";
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate({ to: "/claim/$username", params: { username: slug() } });
+    navigate({ to: "/claim/$username", params: { username: slug } });
   };
+
 
   const pad = size === "lg" ? "p-2" : "p-1.5";
 
@@ -109,7 +124,9 @@ function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
 }
 
 function Nav() {
+  const { slug } = useContext(ClaimNameCtx);
   return (
+
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Logo />
@@ -130,7 +147,8 @@ function Nav() {
         <div className="flex items-center gap-2">
           <Link
             to="/claim/$username"
-            params={{ username: "yourname" }}
+            params={{ username: slug }}
+
             className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
           >
             Claim your link
@@ -166,53 +184,69 @@ export function PhoneFrame({
 const templates = [
   {
     Comp: ClassicPinoyPhone,
+    slug: "classic-pinoy",
     name: "CLASSIC PINOY",
     color: "text-white",
     desc: "Clean, simple and proudly Pinoy.",
   },
   {
     Comp: SellerPhone,
+    slug: "seller",
     name: "SELLER",
     color: "text-amber-400",
     desc: "Perfect for online sellers and resellers.",
   },
   {
     Comp: CreatorPhone,
+    slug: "creator",
     name: "CREATOR",
     color: "text-fuchsia-400",
     desc: "Made for content creators and influencers.",
   },
   {
     Comp: BusinessPhone,
+    slug: "business",
     name: "BUSINESS",
     color: "text-emerald-400",
     desc: "Great for cafes, restaurants and local shops.",
   },
   {
     Comp: ResortPhone,
+    slug: "resort",
     name: "RESORT",
     color: "text-sky-400",
     desc: "Built for resorts, hotels and travel businesses.",
   },
   {
     Comp: PatrioticPhone,
+    slug: "patriotic-pinoy",
     name: "PATRIOTIC PINOY",
     color: "text-[#ff6464]",
     desc: "Show your pride with Philippine colors and sun.",
   },
   {
     Comp: PinoyFitnessPhone,
+    slug: "pinoy-fitness",
     name: "PINOY FITNESS",
     color: "text-[#ffcf2a]",
     desc: "Bold flag-color design for coaches and athletes.",
   },
   {
     Comp: IslaCreatorPhone,
+    slug: "isla-creator",
     name: "ISLA CREATOR",
     color: "text-[#c92030]",
     desc: "Warm cream aesthetic for lifestyle creators.",
   },
+  {
+    Comp: LikhaMarketPhone,
+    slug: "likha-market",
+    name: "LIKHA MARKET",
+    color: "text-[#f8c62c]",
+    desc: "Vibrant Filipino market look for local sellers and makers.",
+  },
 ];
+
 
 function Hero() {
   return (
