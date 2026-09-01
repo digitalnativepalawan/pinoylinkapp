@@ -134,24 +134,19 @@ function ClaimPage() {
 
       setProfile(prof);
       setSlugDraft(prof.username);
-
-
-      if (prof.id !== "local") {
-        const { data: ls } = await supabase
-          .from("links")
-          .select("*")
-          .eq("profile_id", prof.id)
-          .order("position");
-        if (!cancelled) setLinks((ls ?? []) as LinkRow[]);
-      } else {
-        setLinks([]);
-      }
+      const { data: ls } = await supabase
+        .from("links")
+        .select("*")
+        .eq("profile_id", prof.id)
+        .order("position");
+      if (!cancelled) setLinks((ls ?? []) as LinkRow[]);
       if (!cancelled) setLoading(false);
     })();
     return () => {
       cancelled = true;
     };
-  }, [user, username, template]);
+  }, [user, authLoading, username, template]);
+
 
   // Debounced username availability
   useEffect(() => {
