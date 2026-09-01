@@ -180,8 +180,13 @@ function ClaimPage() {
       if (saveTimer.current) clearTimeout(saveTimer.current);
       saveTimer.current = setTimeout(async () => {
         const { error } = await supabase.from("profiles").update(patch).eq("id", profile.id);
-        if (error && error.code === "23505") setError("That username is already taken.");
+        if (error)
+          setError(
+            error.code === "23505" ? "That username is already taken." : `Couldn't save: ${error.message}`,
+          );
+        else setError(null);
       }, 500);
+
     },
     [profile],
   );
