@@ -410,12 +410,21 @@ function ClaimPage() {
             >
               <Eye className="h-4 w-4" /> <span className="hidden sm:inline">Preview</span>
             </button>
+            {profile.published && (
+              <button
+                onClick={handleUnpublish}
+                className="hidden items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted sm:inline-flex"
+              >
+                Unpublish
+              </button>
+            )}
             <button
-              onClick={handlePublish}
+              onClick={profile.published ? () => setShareOpen(true) : handlePublish}
               className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
             >
-              <Rocket className="h-4 w-4" /> {profile.published ? "Update" : "Publish"}
+              <Rocket className="h-4 w-4" /> {profile.published ? "Share" : "Publish"}
             </button>
+
           </div>
         </div>
       </header>
