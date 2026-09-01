@@ -307,7 +307,9 @@ function ClaimPage() {
     const { error: upErr } = await supabase.storage
       .from("avatars")
       .upload(path, file, { upsert: true });
-    if (!upErr) {
+    if (upErr) {
+      setError(`Couldn't upload avatar: ${upErr.message}`);
+    } else {
       const { data } = supabase.storage.from("avatars").getPublicUrl(path);
       await patchProfile({ avatar_url: data.publicUrl });
     }
@@ -316,10 +318,32 @@ function ClaimPage() {
 
   const handlePublish = async () => {
     if (!profile) return;
-    await supabase.from("profiles").update({ published: true }).eq("id", profile.id);
+    const { error: pubErr } = await supabase
+      .from("profiles")
+      .update({ published: true })
+      .eq("id", profile.id);
+    if (pubErr) {
+      setError(`Couldn't publish: ${pubErr.message}`);
+      return;
+    }
+    setError(null);
     setProfile({ ...profile, published: true });
     setShareOpen(true);
   };
+
+  const handleUnpublish = async () => {
+    if (!profile) return;
+    const { error: unErr } = await supabase
+      .from("profiles")
+      .update({ published: false })
+      .eq("id", profile.id);
+    if (unErr) {
+      setError(`Couldn't unpublish: ${unErr.message}`);
+      return;
+    }
+    setProfile({ ...profile, published: false });
+  };
+
 
   if (authLoading || loading) {
     return (
