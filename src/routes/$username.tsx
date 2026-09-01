@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { Link2 } from "lucide-react";
 import { getPublicProfile } from "@/lib/profile.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { renderTemplate } from "@/components/templates";
@@ -32,14 +33,16 @@ function NotFoundView() {
   return (
     <div className="grid min-h-screen place-items-center bg-background px-4 text-center">
       <div className="max-w-sm">
-        <div className="text-6xl">🔗</div>
-        <h1 className="mt-4 text-2xl font-semibold">This page doesn't exist yet</h1>
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-primary/12 text-primary">
+          <Link2 className="h-7 w-7 -rotate-45" />
+        </div>
+        <h1 className="mt-5 text-2xl font-bold tracking-tight">This page is still up for grabs</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          The link isn't published — or the username is up for grabs.
+          Nobody has published here yet. Want the name?
         </p>
         <Link
           to="/"
-          className="mt-6 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+          className="mt-6 inline-flex items-center justify-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:brightness-110 hover:shadow-md hover:shadow-primary/20 active:scale-[0.98]"
         >
           Claim your katwa.link
         </Link>

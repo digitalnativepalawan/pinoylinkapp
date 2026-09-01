@@ -16,12 +16,15 @@ import {
   Loader2,
   Upload,
   GripVertical,
+  Link2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { getIcon, ICON_OPTIONS, type IconName } from "@/lib/icons";
 import { TemplatePhonePreview, renderTemplate } from "@/components/templates";
 import { ThemePicker } from "@/components/ThemePicker";
+import { resolveTheme } from "@/components/templates/theme";
+import { Button, Card, Section, Field, Pill, EmptyState, inputClass } from "@/components/kit";
 
 type Profile = {
   id: string;
@@ -57,6 +60,20 @@ export const Route = createFileRoute("/claim/$username")({
   component: ClaimPage,
 });
 
+/** One-tap link shortcuts — the fastest route to a finished page. */
+const QUICK_ADD: { label: string; icon: string; url: string }[] = [
+  { label: "Messenger", icon: "MessageCircle", url: "https://m.me/" },
+  { label: "Facebook", icon: "Facebook", url: "https://facebook.com/" },
+  { label: "Instagram", icon: "Instagram", url: "https://instagram.com/" },
+  { label: "TikTok", icon: "Music2", url: "https://tiktok.com/@" },
+  { label: "Shopee", icon: "ShoppingBag", url: "https://shopee.ph/" },
+  { label: "Lazada", icon: "Store", url: "https://lazada.com.ph/" },
+  { label: "YouTube", icon: "Youtube", url: "https://youtube.com/@" },
+  { label: "WhatsApp", icon: "MessageCircle", url: "https://wa.me/63" },
+  { label: "Email", icon: "Mail", url: "mailto:" },
+  { label: "Website", icon: "Globe", url: "https://" },
+];
+
 function ClaimPage() {
   const { username } = Route.useParams();
   const { template } = Route.useSearch();
@@ -73,6 +90,7 @@ function ClaimPage() {
     "idle",
   );
   const [slugDraft, setSlugDraft] = useState(username);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
 
   // Load profile + links (no auth required — falls back to a local-only demo profile)
   useEffect(() => {
@@ -98,7 +116,7 @@ function ClaimPage() {
             user_id: user.id,
             username,
             display_name: username,
-            template: template ?? "classic-pinoy",
+            template: template ?? "araw",
           })
           .select()
           .single();
@@ -118,7 +136,7 @@ function ClaimPage() {
           display_name: username,
           bio: "",
           status: "online",
-          template: template ?? "classic-pinoy",
+          template: template ?? "araw",
           avatar_url: null,
           published: false,
         };
@@ -173,10 +191,13 @@ function ClaimPage() {
     async (patch: Partial<Profile>) => {
       if (!profile) return;
       setProfile({ ...profile, ...patch });
+      setSaveState("saving");
       if (saveTimer.current) clearTimeout(saveTimer.current);
       saveTimer.current = setTimeout(async () => {
         const { error } = await supabase.from("profiles").update(patch).eq("id", profile.id);
         if (error && error.code === "23505") setError("That username is already taken.");
+        setSaveState("saved");
+        setTimeout(() => setSaveState("idle"), 1600);
       }, 500);
     },
     [profile],
@@ -200,16 +221,16 @@ function ClaimPage() {
   };
 
   // Links CRUD
-  const addLink = async () => {
+  const addLink = async (preset?: { label: string; icon: string; url: string }) => {
     if (!profile) return;
     const position = (links[links.length - 1]?.position ?? -1) + 1;
     const { data, error } = await supabase
       .from("links")
       .insert({
         profile_id: profile.id,
-        label: "New Link",
-        url: "https://",
-        icon: "Globe",
+        label: preset?.label ?? "New Link",
+        url: preset?.url ?? "https://",
+        icon: preset?.icon ?? "Globe",
         color: "text-zinc-700",
         position,
         enabled: true,
@@ -227,8 +248,11 @@ function ClaimPage() {
     setLinks((cur) => cur.map((l) => (l.id === id ? { ...l, ...patch } : l)));
     const existing = linkTimers.current.get(id);
     if (existing) clearTimeout(existing);
+    setSaveState("saving");
     const t = setTimeout(async () => {
       await supabase.from("links").update(patch).eq("id", id);
+      setSaveState("saved");
+      setTimeout(() => setSaveState("idle"), 1600);
     }, 400);
     linkTimers.current.set(id, t);
   };
@@ -329,6 +353,14 @@ function ClaimPage() {
   const liveUrl = `katwa.link/${profile.username}`;
   const fullUrl = `${typeof window !== "undefined" ? window.location.origin : "https://katwa.link"}/${profile.username}`;
 
+  const themeLabel = resolveTheme(profile.template).label;
+  const steps = [
+    { label: "Name", done: !!profile.display_name && profile.display_name !== profile.username },
+    { label: "Photo", done: !!profile.avatar_url },
+    { label: "Links", done: links.length > 0 },
+    { label: "Publish", done: profile.published },
+  ];
+
   if (previewMode) {
     return (
       <PreviewMode
@@ -341,158 +373,237 @@ function ClaimPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-3 px-4">
+    <div className="min-h-screen bg-background pb-24 lg:pb-0">
+      {/* ---------- Top bar ---------- */}
+      <header className="sticky top-0 z-40 border-b border-border/80 bg-background/80 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4">
           <Link
             to="/"
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+            className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
-            <ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">Back</span>
+            <ArrowLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">Back</span>
           </Link>
-          <div className="hidden flex-1 items-center justify-center sm:flex">
-            <div className="rounded-lg border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
-              <span className="text-foreground font-medium">{liveUrl}</span>
-              {profile.published && (
-                <span className="ml-2 inline-flex items-center gap-1 rounded bg-emerald-500/20 px-1.5 py-0.5 text-emerald-400">
-                  <span className="h-1 w-1 rounded-full bg-emerald-400" /> live
-                </span>
+
+          <div className="hidden min-w-0 flex-1 items-center justify-center gap-2 sm:flex">
+            <div className="flex min-w-0 items-center gap-2 rounded-xl border border-border bg-card/60 px-3 py-1.5 text-xs backdrop-blur">
+              <Globe className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              <span className="truncate font-medium text-foreground">{liveUrl}</span>
+              {profile.published ? (
+                <Pill tone="live">
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+                  Live
+                </Pill>
+              ) : (
+                <Pill>Draft</Pill>
               )}
             </div>
+            <SaveIndicator state={saveState} />
           </div>
+
           <div className="flex items-center gap-2">
-            <button
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={() => setPreviewMode(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-sm hover:bg-muted"
+              className="hidden sm:inline-flex"
             >
-              <Eye className="h-4 w-4" /> <span className="hidden sm:inline">Preview</span>
-            </button>
-            <button
-              onClick={handlePublish}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground hover:opacity-90"
-            >
-              <Rocket className="h-4 w-4" /> {profile.published ? "Update" : "Publish"}
-            </button>
+              <Eye className="h-4 w-4" />
+              <span className="hidden md:inline">Preview</span>
+            </Button>
+            <Button size="sm" onClick={handlePublish}>
+              <Rocket className="h-4 w-4" />
+              {profile.published ? "Update" : "Publish"}
+            </Button>
+          </div>
+        </div>
+
+        {/* Step rail — tells people exactly what's left to do */}
+        <div className="mx-auto max-w-7xl px-4 pb-3">
+          <div className="flex items-center gap-1.5 overflow-x-auto">
+            {steps.map((s, i) => (
+              <div key={s.label} className="flex shrink-0 items-center gap-1.5">
+                <span
+                  className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                    s.done ? "bg-emerald-500/15 text-emerald-300" : "bg-muted text-muted-foreground"
+                  }`}
+                >
+                  {s.done ? (
+                    <Check className="h-3 w-3" />
+                  ) : (
+                    <span className="grid h-3.5 w-3.5 place-items-center rounded-full border border-current text-[8px]">
+                      {i + 1}
+                    </span>
+                  )}
+                  {s.label}
+                </span>
+                {i < steps.length - 1 && <span className="h-px w-3 bg-border" aria-hidden />}
+              </div>
+            ))}
           </div>
         </div>
       </header>
 
       {error && (
         <div className="mx-auto max-w-7xl px-4 pt-3">
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300">
-            {error}
+          <div className="flex items-start gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-3.5 py-2.5 text-xs text-red-300">
+            <span className="flex-1">{error}</span>
+            <button onClick={() => setError(null)} aria-label="Dismiss">
+              <X className="h-3.5 w-3.5" />
+            </button>
           </div>
         </div>
       )}
 
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[1fr_320px]">
+      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[1fr_340px]">
         <div className="space-y-6">
-          <div className="rounded-2xl border border-border bg-card/50 p-5">
-            <h2 className="text-lg font-medium">Profile</h2>
-
-            <div className="mt-4 grid gap-4">
-              <Field label="Avatar">
-                <div className="flex items-center gap-3">
-                  <div className="h-14 w-14 overflow-hidden rounded-full border border-border bg-muted">
-                    {profile.avatar_url && (
-                      <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
-                    )}
-                  </div>
-                  <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs hover:bg-muted">
+          {/* ---------- Profile ---------- */}
+          <Section title="Your profile" desc="This is what visitors see at the top of your page.">
+            <div className="grid gap-5">
+              {/* Avatar */}
+              <div className="flex items-center gap-4">
+                <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full border border-border bg-muted ring-2 ring-primary/20">
+                  {profile.avatar_url ? (
+                    <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    <span className="text-lg font-bold text-muted-foreground">
+                      {(profile.display_name || "K").slice(0, 1).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-border bg-background/60 px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-muted">
                     {uploading ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
                     ) : (
-                      <Upload className="h-3 w-3" />
+                      <Upload className="h-3.5 w-3.5" />
                     )}
-                    {uploading ? "Uploading…" : "Change"}
+                    {uploading ? "Uploading…" : "Upload photo"}
                     <input type="file" accept="image/*" className="hidden" onChange={onAvatar} />
                   </label>
+                  <p className="mt-1.5 text-[11px] text-muted-foreground">
+                    Square image works best. JPG or PNG.
+                  </p>
                 </div>
-              </Field>
+              </div>
 
-              <Field label="Username">
-                <div className="flex items-center rounded-lg border border-border bg-background">
-                  <span className="px-3 text-sm text-muted-foreground">katwa.link/</span>
+              <Field
+                label="Your link"
+                hint={
+                  <span
+                    className={`text-[11px] font-medium ${
+                      usernameStatus === "ok"
+                        ? "text-emerald-400"
+                        : usernameStatus === "taken"
+                          ? "text-red-400"
+                          : "text-muted-foreground"
+                    }`}
+                  >
+                    {usernameStatus === "checking" && "checking…"}
+                    {usernameStatus === "ok" && "available ✓"}
+                    {usernameStatus === "taken" && "not available"}
+                  </span>
+                }
+              >
+                <div className="flex items-center rounded-xl border border-border bg-background/60 transition-colors focus-within:border-primary">
+                  <span className="py-2.5 pl-3.5 text-sm text-muted-foreground">katwa.link/</span>
                   <input
                     value={slugDraft}
                     onChange={(e) =>
                       setSlugDraft(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))
                     }
                     onBlur={commitUsername}
-                    className="flex-1 bg-transparent py-2.5 pr-3 text-sm outline-none"
+                    className="min-w-0 flex-1 bg-transparent py-2.5 pr-3.5 text-sm font-medium outline-none"
                   />
-                  <span
-                    className={`pr-3 text-xs ${usernameStatus === "ok" ? "text-emerald-400" : usernameStatus === "taken" ? "text-red-400" : "text-muted-foreground"}`}
-                  >
-                    {usernameStatus === "checking" && "checking…"}
-                    {usernameStatus === "ok" && "available ✓"}
-                    {usernameStatus === "taken" && "taken"}
-                    {usernameStatus === "idle" && "✓"}
-                  </span>
                 </div>
               </Field>
+
               <Field label="Display name">
                 <input
                   value={profile.display_name}
                   onChange={(e) => patchProfile({ display_name: e.target.value })}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary"
+                  placeholder="e.g. Katwa Finds"
+                  className={inputClass}
                 />
               </Field>
-              <Field label="Bio">
+
+              <Field
+                label="Bio"
+                hint={
+                  <span className="text-[11px] text-muted-foreground">
+                    {(profile.bio ?? "").length}/120
+                  </span>
+                }
+              >
                 <textarea
                   value={profile.bio ?? ""}
                   onChange={(e) => patchProfile({ bio: e.target.value })}
                   rows={3}
                   maxLength={120}
-                  className="w-full resize-none rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary"
+                  placeholder="Tell visitors what you do in one line."
+                  className={`${inputClass} resize-none`}
                 />
-                <div className="mt-1 text-right text-[10px] text-muted-foreground">
-                  {(profile.bio ?? "").length}/120
-                </div>
               </Field>
-              <Field label="Status">
+
+              <Field label="Availability">
                 <div className="flex gap-2">
                   {(["online", "offline"] as const).map((s) => (
                     <button
                       key={s}
+                      type="button"
                       onClick={() => patchProfile({ status: s })}
-                      className={`rounded-lg border px-3 py-1.5 text-xs font-medium capitalize ${
+                      aria-pressed={profile.status === s}
+                      className={`inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-semibold transition-all ${
                         profile.status === s
-                          ? "border-primary bg-primary/15 text-primary"
-                          : "border-border bg-background text-muted-foreground"
+                          ? "border-primary bg-primary/12 text-primary"
+                          : "border-border bg-background/60 text-muted-foreground hover:bg-muted"
                       }`}
                     >
                       <span
-                        className={`mr-1 inline-block h-1.5 w-1.5 rounded-full ${s === "online" ? "bg-emerald-400" : "bg-zinc-500"}`}
+                        className={`h-1.5 w-1.5 rounded-full ${s === "online" ? "bg-emerald-400" : "bg-zinc-500"}`}
                       />
                       {s === "online" ? "Active now" : "Away"}
                     </button>
                   ))}
                 </div>
               </Field>
-              <Field label="Theme">
-                <ThemePicker
-                  value={profile.template}
-                  onChange={(slug) => patchProfile({ template: slug })}
-                />
-              </Field>
             </div>
-          </div>
+          </Section>
 
-          <div className="rounded-2xl border border-border bg-card/50 p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-medium">Links</h2>
-                <p className="text-sm text-muted-foreground">Add, edit, and reorder your links.</p>
-              </div>
-              <button
-                onClick={addLink}
-                className="inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground"
-              >
-                <Plus className="h-3 w-3" /> Add Link
-              </button>
+          {/* ---------- Theme ---------- */}
+          <Section title="Theme" desc="One tap to restyle your whole page.">
+            <ThemePicker
+              value={profile.template}
+              onChange={(slug) => patchProfile({ template: slug })}
+            />
+          </Section>
+
+          {/* ---------- Links ---------- */}
+          <Section
+            title="Your links"
+            desc="Drag to reorder. The first link is highlighted on your page."
+            action={
+              <Button size="sm" onClick={() => addLink()}>
+                <Plus className="h-3.5 w-3.5" /> Add link
+              </Button>
+            }
+          >
+            {/* Quick-add presets — the fastest path to a finished page */}
+            <div className="mb-4 flex flex-wrap gap-1.5">
+              {QUICK_ADD.map((q) => (
+                <button
+                  key={q.label}
+                  type="button"
+                  onClick={() => addLink(q)}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-primary/50 hover:text-foreground"
+                >
+                  <Plus className="h-3 w-3" />
+                  {q.label}
+                </button>
+              ))}
             </div>
-            <ul className="mt-4 space-y-2">
+
+            <ul className="space-y-2">
               {links.map((l) => {
                 const Icon = getIcon(l.icon);
                 return (
@@ -520,93 +631,125 @@ function ClaimPage() {
                       setDragId(null);
                       setDragOverId(null);
                     }}
-                    className={`grid grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-2 rounded-lg border bg-background p-3 ${
+                    className={`grid grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-2.5 rounded-xl border bg-background/60 p-3 transition-all ${
                       dragOverId === l.id && dragId && dragId !== l.id
-                        ? "border-primary"
+                        ? "border-primary ring-1 ring-primary/40"
                         : "border-border"
-                    } ${dragId === l.id ? "opacity-50" : ""}`}
+                    } ${dragId === l.id ? "opacity-40" : "hover:border-border/60 hover:bg-muted/40"}`}
                   >
                     <span
-                      className="cursor-grab text-muted-foreground active:cursor-grabbing"
+                      className="cursor-grab text-muted-foreground/60 transition-colors hover:text-foreground active:cursor-grabbing"
                       aria-label="Drag to reorder"
                     >
                       <GripVertical className="h-4 w-4" />
                     </span>
-                    <select
-                      value={(l.icon ?? "Globe") as IconName}
-                      onChange={(e) => patchLink(l.id, { icon: e.target.value })}
-                      className="h-9 w-9 appearance-none rounded-lg bg-muted text-transparent"
-                      style={{ backgroundImage: "none" }}
-                      aria-label="Icon"
-                    >
-                      {ICON_OPTIONS.map((o) => (
-                        <option key={o.name} value={o.name}>
-                          {o.label}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="-ml-12 pointer-events-none grid h-9 w-9 place-items-center">
-                      <Icon className={`h-4 w-4 ${l.color || "text-zinc-500"}`} />
+
+                    <div className="relative">
+                      <select
+                        value={(l.icon ?? "Globe") as IconName}
+                        onChange={(e) => patchLink(l.id, { icon: e.target.value })}
+                        className="h-9 w-9 cursor-pointer appearance-none rounded-lg bg-primary/12 text-transparent"
+                        aria-label="Choose icon"
+                      >
+                        {ICON_OPTIONS.map((o) => (
+                          <option key={o.name} value={o.name} className="text-foreground">
+                            {o.label}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="pointer-events-none absolute inset-0 grid place-items-center">
+                        <Icon className="h-4 w-4 text-primary" />
+                      </span>
                     </div>
+
                     <div className="min-w-0">
                       <input
                         value={l.label}
                         onChange={(e) => patchLink(l.id, { label: e.target.value })}
-                        className="w-full truncate bg-transparent text-sm font-medium outline-none"
+                        placeholder="Link title"
+                        className="w-full truncate bg-transparent text-sm font-semibold outline-none placeholder:font-normal placeholder:text-muted-foreground/60"
                       />
                       <input
                         value={l.url}
                         onChange={(e) => patchLink(l.id, { url: e.target.value })}
+                        placeholder="https://"
                         className="mt-0.5 w-full truncate bg-transparent text-[11px] text-muted-foreground outline-none"
                       />
                     </div>
+
                     <button
                       onClick={() => removeLink(l.id)}
-                      className="text-muted-foreground hover:text-destructive"
+                      aria-label={`Delete ${l.label}`}
+                      className="rounded-lg p-1.5 text-muted-foreground/60 transition-colors hover:bg-red-500/10 hover:text-red-400"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </li>
                 );
               })}
-              {links.length === 0 && (
-                <li className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-                  No links yet. Add your first one.
-                </li>
-              )}
             </ul>
-          </div>
+
+            {links.length === 0 && (
+              <EmptyState
+                icon={<Link2 className="h-5 w-5" />}
+                title="No links yet"
+                desc="Tap a shortcut above, or add a link from scratch."
+                action={
+                  <Button size="sm" onClick={() => addLink()}>
+                    <Plus className="h-3.5 w-3.5" /> Add your first link
+                  </Button>
+                }
+              />
+            )}
+          </Section>
         </div>
 
-        <aside className="lg:sticky lg:top-20 lg:self-start">
-          <div className="rounded-2xl border border-border bg-card/50 p-4">
+        {/* ---------- Live preview ---------- */}
+        <aside className="hidden lg:sticky lg:top-32 lg:block lg:self-start">
+          <Card className="p-4">
             <div className="mb-3 flex items-center justify-between">
               <div>
-                <div className="text-sm font-semibold">Live Preview</div>
-                <div className="text-xs text-muted-foreground">How your page looks.</div>
+                <div className="text-sm font-semibold">Live preview</div>
+                <div className="text-xs text-muted-foreground">Updates as you type.</div>
               </div>
+              <Pill tone="accent">{themeLabel}</Pill>
             </div>
             <div className="flex justify-center">
               <MiniPreview profile={profile} links={links} />
             </div>
-            <button
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={() => setPreviewMode(true)}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background py-2 text-sm hover:bg-muted"
+              className="mt-4 w-full"
             >
               <Eye className="h-4 w-4" /> Open full preview
-            </button>
+            </Button>
             {profile.published && (
               <a
                 href={`/${profile.username}`}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background py-2 text-xs text-muted-foreground hover:bg-muted"
+                className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl border border-border bg-background/60 py-2 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
                 <Globe className="h-3 w-3" /> View live page
               </a>
             )}
-          </div>
+          </Card>
         </aside>
+      </div>
+
+      {/* ---------- Mobile action bar ---------- */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/90 px-4 py-3 backdrop-blur-xl lg:hidden">
+        <div className="flex items-center gap-2">
+          <SaveIndicator state={saveState} className="mr-auto" />
+          <Button variant="secondary" size="sm" onClick={() => setPreviewMode(true)}>
+            <Eye className="h-4 w-4" /> Preview
+          </Button>
+          <Button size="sm" onClick={handlePublish}>
+            <Rocket className="h-4 w-4" /> {profile.published ? "Update" : "Publish"}
+          </Button>
+        </div>
       </div>
 
       {shareOpen && (
@@ -623,12 +766,28 @@ function ClaimPage() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function SaveIndicator({
+  state,
+  className = "",
+}: {
+  state: "idle" | "saving" | "saved";
+  className?: string;
+}) {
+  if (state === "idle") return <span className={className} />;
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-xs font-medium text-muted-foreground">{label}</span>
-      {children}
-    </label>
+    <span
+      className={`inline-flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground ${className}`}
+    >
+      {state === "saving" ? (
+        <>
+          <Loader2 className="h-3 w-3 animate-spin" /> Saving…
+        </>
+      ) : (
+        <>
+          <Check className="h-3 w-3 text-emerald-400" /> Saved
+        </>
+      )}
+    </span>
   );
 }
 
@@ -660,24 +819,21 @@ function PreviewMode({
   onPublish: () => void;
 }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0b0f1a] via-[#0e1226] to-[#1a0e26]">
-      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-white/10 bg-black/50 px-4 py-3 backdrop-blur">
-        <div className="flex items-center gap-2 text-sm text-white/80">
-          <Eye className="h-4 w-4" /> Preview mode
+    <div className="min-h-screen bg-background">
+      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-border/80 bg-background/80 px-4 py-3 backdrop-blur-xl">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Eye className="h-4 w-4" /> Preview
+          <Pill tone="accent" className="ml-1">
+            {resolveTheme(profile.template).label}
+          </Pill>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={onExit}
-            className="rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 text-xs text-white hover:bg-white/10"
-          >
-            <X className="mr-1 inline h-3 w-3" /> Exit
-          </button>
-          <button
-            onClick={onPublish}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground"
-          >
-            <Rocket className="h-3 w-3" /> {profile.published ? "Update" : "Publish"}
-          </button>
+          <Button variant="secondary" size="sm" onClick={onExit}>
+            <X className="h-3.5 w-3.5" /> Exit
+          </Button>
+          <Button size="sm" onClick={onPublish}>
+            <Rocket className="h-3.5 w-3.5" /> {profile.published ? "Update" : "Publish"}
+          </Button>
         </div>
       </div>
       <div className="mx-auto max-w-md">
@@ -721,7 +877,7 @@ function ShareModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl"
+        className="relative w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl duration-200 animate-in fade-in zoom-in-95"
       >
         <button
           onClick={onClose}
@@ -737,14 +893,14 @@ function ShareModal({
           Your katwa.link page is published. Share it everywhere.
         </p>
 
-        <div className="mt-5 flex items-center gap-2 rounded-lg border border-border bg-background p-2">
+        <div className="mt-5 flex items-center gap-2 rounded-xl border border-border bg-background/60 p-2">
           <div className="grid h-8 w-8 place-items-center rounded-md bg-primary/15 text-primary">
             <Globe className="h-4 w-4" />
           </div>
           <div className="min-w-0 flex-1 truncate text-sm">{url}</div>
           <button
             onClick={copy}
-            className="shrink-0 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground"
+            className="shrink-0 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition hover:brightness-110"
           >
             {copied ? (
               <>
@@ -761,7 +917,7 @@ function ShareModal({
         <div className="mt-4 grid grid-cols-3 gap-2">
           <button
             onClick={share}
-            className="flex flex-col items-center gap-1 rounded-lg border border-border bg-background py-3 text-xs hover:bg-muted"
+            className="flex flex-col items-center gap-1 rounded-xl border border-border bg-background/60 py-3 text-xs font-medium transition-all hover:-translate-y-0.5 hover:bg-muted"
           >
             <Share2 className="h-4 w-4 text-primary" /> Share
           </button>
@@ -770,11 +926,11 @@ function ShareModal({
             target="_blank"
             rel="noreferrer"
             onClick={onView}
-            className="flex flex-col items-center gap-1 rounded-lg border border-border bg-background py-3 text-xs hover:bg-muted"
+            className="flex flex-col items-center gap-1 rounded-xl border border-border bg-background/60 py-3 text-xs font-medium transition-all hover:-translate-y-0.5 hover:bg-muted"
           >
             <Eye className="h-4 w-4 text-primary" /> View page
           </a>
-          <button className="flex flex-col items-center gap-1 rounded-lg border border-border bg-background py-3 text-xs hover:bg-muted">
+          <button className="flex flex-col items-center gap-1 rounded-xl border border-border bg-background/60 py-3 text-xs font-medium transition-all hover:-translate-y-0.5 hover:bg-muted">
             <QrCode className="h-4 w-4 text-primary" /> QR Code
           </button>
         </div>

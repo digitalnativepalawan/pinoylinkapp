@@ -17,7 +17,9 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-medium text-foreground">404</h1>
+        <h1 className="bg-gradient-to-b from-foreground to-muted-foreground bg-clip-text text-7xl font-bold text-transparent">
+          404
+        </h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
@@ -25,7 +27,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:brightness-110 hover:shadow-md hover:shadow-primary/20 active:scale-[0.98]"
           >
             Go home
           </Link>
@@ -57,13 +59,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:brightness-110 hover:shadow-md hover:shadow-primary/20 active:scale-[0.98]"
           >
             Try again
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            className="inline-flex items-center justify-center rounded-xl border border-border bg-background/60 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
           >
             Go home
           </a>
@@ -78,8 +80,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "link in bio" },
-      { name: "description", content: "Filipino Link in Bio" },
+      { title: "katwa.link — One Link. All Your Channels." },
+      {
+        name: "description",
+        content: "Filipino-first link in bio for creators, sellers and businesses.",
+      },
       { name: "author", content: "Lovable" },
       { property: "og:title", content: "link in bio" },
       { property: "og:description", content: "Filipino Link in Bio" },

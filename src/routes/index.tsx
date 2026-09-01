@@ -81,7 +81,7 @@ function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
   return (
     <form
       onSubmit={submit}
-      className={`flex items-center gap-2 rounded-xl border border-border bg-background/80 backdrop-blur ${pad}`}
+      className={`flex items-center gap-2 rounded-2xl border border-border bg-background/70 shadow-sm backdrop-blur transition-colors focus-within:border-primary ${pad}`}
     >
       <span className="pl-2 text-sm text-muted-foreground whitespace-nowrap">katwa.link/</span>
       <input
@@ -92,7 +92,7 @@ function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
       />
       <button
         type="submit"
-        className="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+        className="shrink-0 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:brightness-110 hover:shadow-md hover:shadow-primary/20 active:scale-[0.98]"
       >
         Claim
       </button>
@@ -106,16 +106,13 @@ function Nav() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Logo />
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-          <a href="#features" className="hover:text-foreground">
+          <a href="#features" className="transition-colors hover:text-foreground">
             Features
           </a>
-          <a href="#templates" className="hover:text-foreground">
-            Templates
+          <a href="#templates" className="transition-colors hover:text-foreground">
+            Themes
           </a>
-          <a href="#dashboard" className="hover:text-foreground">
-            Dashboard
-          </a>
-          <a href="#pricing" className="hover:text-foreground">
+          <a href="#pricing" className="transition-colors hover:text-foreground">
             Pricing
           </a>
         </nav>
@@ -123,7 +120,7 @@ function Nav() {
           <Link
             to="/claim/$username"
             params={{ username: "yourname" }}
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+            className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:brightness-110 hover:shadow-md hover:shadow-primary/20 active:scale-[0.98]"
           >
             Claim your link
           </Link>
