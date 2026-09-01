@@ -856,10 +856,27 @@ function ShareModal({
           >
             <Eye className="h-4 w-4 text-primary" /> View page
           </a>
-          <button className="flex flex-col items-center gap-1 rounded-lg border border-border bg-background py-3 text-xs hover:bg-muted">
+          <button
+            onClick={makeQr}
+            className="flex flex-col items-center gap-1 rounded-lg border border-border bg-background py-3 text-xs hover:bg-muted"
+          >
             <QrCode className="h-4 w-4 text-primary" /> QR Code
           </button>
         </div>
+
+        {qr && (
+          <div className="mt-4 flex flex-col items-center gap-2 rounded-lg border border-border bg-background p-4">
+            <img src={qr} alt="QR code for your katwa.link page" className="h-40 w-40 rounded" />
+            <a
+              href={qr}
+              download="katwa-link-qr.png"
+              className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground"
+            >
+              Download QR
+            </a>
+          </div>
+        )}
+
       </div>
     </div>
   );
