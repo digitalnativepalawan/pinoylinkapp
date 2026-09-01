@@ -767,6 +767,7 @@ function ShareModal({
   onView: () => void;
 }) {
   const [copied, setCopied] = useState(false);
+  const [qr, setQr] = useState<string | null>(null);
   const copy = async () => {
     await navigator.clipboard.writeText(url);
     setCopied(true);
@@ -783,6 +784,17 @@ function ShareModal({
       copy();
     }
   };
+  const makeQr = async () => {
+    if (qr) {
+      setQr(null);
+      return;
+    }
+    const QRCode = (await import("qrcode")).default;
+    setQr(
+      await QRCode.toDataURL(url, { width: 512, margin: 1, color: { dark: "#0a0a0a", light: "#ffffff" } }),
+    );
+  };
+
 
   return (
     <div
