@@ -20,7 +20,8 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { getIcon, ICON_OPTIONS, type IconName } from "@/lib/icons";
-import { TEMPLATES, TemplatePhonePreview, renderTemplate } from "@/components/templates";
+import { TemplatePhonePreview, renderTemplate } from "@/components/templates";
+import { ThemePicker } from "@/components/ThemePicker";
 
 type Profile = {
   id: string;
@@ -469,29 +470,11 @@ function ClaimPage() {
                   ))}
                 </div>
               </Field>
-              <Field label="Template">
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-                  {TEMPLATES.map((t) => {
-                    const active = profile.template === t.slug;
-                    return (
-                      <button
-                        key={t.slug}
-                        type="button"
-                        onClick={() => patchProfile({ template: t.slug })}
-                        className={`flex flex-col items-start gap-2 rounded-lg border p-2.5 text-left transition ${active ? "border-primary bg-primary/10 ring-1 ring-primary" : "border-border bg-background hover:bg-muted"}`}
-                      >
-                        <div className="flex h-6 w-full overflow-hidden rounded-md">
-                          {t.swatch.map((c, i) => (
-                            <div key={i} className="h-full flex-1" style={{ background: c }} />
-                          ))}
-                        </div>
-                        <span className="text-[11px] font-semibold uppercase tracking-wide">
-                          {t.label}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
+              <Field label="Theme">
+                <ThemePicker
+                  value={profile.template}
+                  onChange={(slug) => patchProfile({ template: slug })}
+                />
               </Field>
             </div>
           </div>

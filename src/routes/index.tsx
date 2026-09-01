@@ -18,16 +18,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { getIcon } from "@/lib/icons";
-import {
-  ClassicPinoyPhone,
-  SellerPhone,
-  CreatorPhone,
-  BusinessPhone,
-  ResortPhone,
-  PatrioticPhone,
-  PinoyFitnessPhone,
-  IslaCreatorPhone,
-} from "@/components/templates";
+import { ThemePhone, TemplatePhonePreview, demoProps } from "@/components/templates";
+import { THEMES } from "@/components/templates/theme";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -163,57 +155,6 @@ export function PhoneFrame({
 
 /* ---------- Sections ---------- */
 
-const templates = [
-  {
-    Comp: ClassicPinoyPhone,
-    name: "CLASSIC PINOY",
-    color: "text-white",
-    desc: "Clean, simple and proudly Pinoy.",
-  },
-  {
-    Comp: SellerPhone,
-    name: "SELLER",
-    color: "text-amber-400",
-    desc: "Perfect for online sellers and resellers.",
-  },
-  {
-    Comp: CreatorPhone,
-    name: "CREATOR",
-    color: "text-fuchsia-400",
-    desc: "Made for content creators and influencers.",
-  },
-  {
-    Comp: BusinessPhone,
-    name: "BUSINESS",
-    color: "text-emerald-400",
-    desc: "Great for cafes, restaurants and local shops.",
-  },
-  {
-    Comp: ResortPhone,
-    name: "RESORT",
-    color: "text-sky-400",
-    desc: "Built for resorts, hotels and travel businesses.",
-  },
-  {
-    Comp: PatrioticPhone,
-    name: "PATRIOTIC PINOY",
-    color: "text-[#ff6464]",
-    desc: "Show your pride with Philippine colors and sun.",
-  },
-  {
-    Comp: PinoyFitnessPhone,
-    name: "PINOY FITNESS",
-    color: "text-[#ffcf2a]",
-    desc: "Bold flag-color design for coaches and athletes.",
-  },
-  {
-    Comp: IslaCreatorPhone,
-    name: "ISLA CREATOR",
-    color: "text-[#c92030]",
-    desc: "Warm cream aesthetic for lifestyle creators.",
-  },
-];
-
 function Hero() {
   return (
     <section className="relative overflow-hidden">
@@ -260,7 +201,7 @@ function Hero() {
         </div>
 
         <div className="relative flex items-start justify-center">
-          <ClassicPinoyPhone />
+          <ThemePhone slug="araw" />
         </div>
       </div>
     </section>
@@ -268,41 +209,87 @@ function Hero() {
 }
 
 function TemplatesSection() {
+  const [active, setActive] = useState(THEMES[0].slug);
+  const theme = THEMES.find((t) => t.slug === active) ?? THEMES[0];
+
   return (
     <section id="templates" className="relative border-t border-border/50 py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="text-center">
           <Logo className="justify-center" />
           <h2 className="mt-4 text-3xl font-semibold tracking-tight sm:text-5xl">
-            Beautiful Templates, <span className="text-[#60a5fa]">Filipino</span>{" "}
-            <span className="text-[#ef4444]">Style</span>
+            Five themes. <span className="text-[#60a5fa]">One</span>{" "}
+            <span className="text-[#ef4444]">tap</span> to switch.
           </h2>
-          <p className="mt-3 text-muted-foreground">Choose a template that fits your vibe. 🇵🇭</p>
+          <p className="mt-3 text-muted-foreground">
+            Same clean layout, your color story. Pick a vibe and make it yours. 🇵🇭
+          </p>
         </div>
 
-        <div className="mt-16 grid gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
-          {templates.map(({ Comp, name, color, desc }) => (
-            <Link
-              key={name}
-              to="/claim/$username"
-              params={{ username: "yourname" }}
-              search={{ template: name.toLowerCase().replace(/\s+/g, "-") }}
-              className="group flex flex-col items-center"
-            >
-              <div className="transition group-hover:-translate-y-1">
-                <Comp />
-              </div>
-              <div className="mt-5 text-center">
-                <div className={`text-base font-semibold tracking-wider ${color}`}>{name}</div>
-                <p className="mt-1 max-w-[16rem] text-xs text-muted-foreground">{desc}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <div className="mt-12 grid items-center gap-10 lg:grid-cols-[320px_1fr]">
+          {/* Live phone */}
+          <div className="flex justify-center">
+            <PhoneFrame>
+              <TemplatePhonePreview slug={active} props={demoProps(active)} />
+            </PhoneFrame>
+          </div>
 
-        <div className="mx-auto mt-16 flex max-w-md items-center justify-center gap-2 rounded-full border border-border bg-card/60 px-4 py-2.5 text-xs text-muted-foreground backdrop-blur">
-          <Sparkles className="h-4 w-4 text-primary" />
-          All templates are fully customizable.
+          {/* Theme switcher */}
+          <div>
+            <div className="grid gap-2.5 sm:grid-cols-2">
+              {THEMES.map((t) => {
+                const on = t.slug === active;
+                return (
+                  <button
+                    key={t.slug}
+                    type="button"
+                    onMouseEnter={() => setActive(t.slug)}
+                    onFocus={() => setActive(t.slug)}
+                    onClick={() => setActive(t.slug)}
+                    className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-all duration-200 ${
+                      on
+                        ? "border-primary bg-primary/10 ring-1 ring-primary/50"
+                        : "border-border bg-card/40 hover:-translate-y-0.5 hover:border-primary/40"
+                    }`}
+                  >
+                    <span
+                      className="h-11 w-11 shrink-0 rounded-lg ring-1 ring-white/10"
+                      style={{ background: t.vars.bg }}
+                    />
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold">{t.label}</span>
+                      <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+                        {t.desc}
+                      </span>
+                    </span>
+                    <span className="ml-auto flex shrink-0 gap-1">
+                      {t.swatch.map((c) => (
+                        <span
+                          key={c}
+                          className="h-3 w-3 rounded-full ring-1 ring-black/20"
+                          style={{ background: c }}
+                        />
+                      ))}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <Link
+                to="/claim/$username"
+                params={{ username: "yourname" }}
+                search={{ template: theme.slug }}
+                className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+              >
+                <Sparkles className="h-4 w-4" /> Use {theme.label}
+              </Link>
+              <span className="text-xs text-muted-foreground">
+                Change your theme anytime — no rebuild needed.
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
