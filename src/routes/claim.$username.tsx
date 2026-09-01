@@ -225,12 +225,22 @@ function ClaimPage() {
       })
       .select()
       .single();
-    if (!error && data) setLinks([...links, data as LinkRow]);
+    if (error) setError(`Couldn't add link: ${error.message}`);
+    else if (data) {
+      setError(null);
+      setLinks([...links, data as LinkRow]);
+    }
   };
   const removeLink = async (id: string) => {
+    const prev = links;
     setLinks(links.filter((l) => l.id !== id));
-    await supabase.from("links").delete().eq("id", id);
+    const { error } = await supabase.from("links").delete().eq("id", id);
+    if (error) {
+      setLinks(prev);
+      setError(`Couldn't delete link: ${error.message}`);
+    }
   };
+
   const linkTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
   const patchLink = (id: string, patch: Partial<LinkRow>) => {
     setLinks((cur) => cur.map((l) => (l.id === id ? { ...l, ...patch } : l)));
