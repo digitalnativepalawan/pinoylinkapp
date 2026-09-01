@@ -73,9 +73,11 @@ function ClaimPage() {
   );
   const [slugDraft, setSlugDraft] = useState(username);
 
-  // Load profile + links (no auth required — falls back to a local-only demo profile)
+  // Load profile + links. A silent anonymous session is created by AuthProvider,
+  // so every visitor has a real user_id and all edits persist.
   useEffect(() => {
     let cancelled = false;
+    if (authLoading) return;
     (async () => {
       setLoading(true);
       setError(null);
@@ -89,8 +91,19 @@ function ClaimPage() {
 
       let prof = p as Profile | null;
 
-      // If signed in and no profile exists, create one. Otherwise use an in-memory demo profile.
-      if (!prof && user) {
+      if (!user) {
+        setError("Couldn't start a session. Please refresh the page.");
+        setLoading(false);
+        return;
+      }
+
+      if (prof && prof.user_id !== user.id) {
+        setError("That username is already taken. Try another one.");
+        setLoading(false);
+        return;
+      }
+
+      if (!prof) {
         const { data: created, error: insErr } = await supabase
           .from("profiles")
           .insert({
@@ -102,29 +115,26 @@ function ClaimPage() {
           .select()
           .single();
         if (insErr) {
-          if (insErr.code === "23505") setError("That username is already taken.");
-          else setError(insErr.message);
-        } else {
-          prof = created as Profile;
+          setError(
+            insErr.code === "23505" ? "That username is already taken." : insErr.message,
+          );
+          setLoading(false);
+          return;
         }
-      }
-
-      if (!prof) {
-        prof = {
-          id: "local",
-          user_id: "local",
-          username,
-          display_name: username,
-          bio: "",
-          status: "online",
-          template: template ?? "classic-pinoy",
-          avatar_url: null,
-          published: false,
-        };
+        prof = created as Profile;
+      } else if (template && template !== prof.template) {
+        const { data: updated } = await supabase
+          .from("profiles")
+          .update({ template })
+          .eq("id", prof.id)
+          .select()
+          .single();
+        if (updated) prof = updated as Profile;
       }
 
       setProfile(prof);
       setSlugDraft(prof.username);
+
 
       if (prof.id !== "local") {
         const { data: ls } = await supabase
