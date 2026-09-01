@@ -16,7 +16,7 @@ import {
   Check,
   Sparkles,
 } from "lucide-react";
-import { useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { getIcon } from "@/lib/icons";
 import {
   ClassicPinoyPhone,
@@ -27,7 +27,26 @@ import {
   PatrioticPhone,
   PinoyFitnessPhone,
   IslaCreatorPhone,
+  LikhaMarketPhone,
 } from "@/components/templates";
+
+/** Username typed in any claim field, shared with the nav + template CTAs. */
+const ClaimNameCtx = createContext<{
+  name: string;
+  setName: (v: string) => void;
+  slug: string;
+}>({ name: "", setName: () => {}, slug: "yourname" });
+
+function toSlug(v: string) {
+  return (
+    v
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "") || "yourname"
+  );
+}
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
