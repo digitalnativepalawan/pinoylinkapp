@@ -90,18 +90,14 @@ function Logo({ className = "" }: { className?: string }) {
 }
 
 function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
-  const [name, setName] = useState("");
+  const { name, setName, slug } = useContext(ClaimNameCtx);
   const navigate = useNavigate();
-  const slug = () =>
-    name
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, "") || "yourname";
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate({ to: "/claim/$username", params: { username: slug() } });
+    navigate({ to: "/claim/$username", params: { username: slug } });
   };
+
 
   const pad = size === "lg" ? "p-2" : "p-1.5";
 
