@@ -47,7 +47,6 @@ function toSlug(v: string) {
   );
 }
 
-
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -55,9 +54,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Filipino-first link-in-bio. Connect Messenger, WhatsApp, Shopee, Lazada, TikTok, GCash and more in one beautiful page.",
+          "Filipino-first link-in-bio. Connect Messenger, WhatsApp, Shopee, Lazada, TikTok Shop, GCash and more in one beautiful page.",
       },
-      { property: "og:title", content: "katwa.link — Beautiful Templates, Filipino Style" },
+      {
+        property: "og:title",
+        content: "katwa.link — Beautiful Templates, Filipino Style",
+      },
       {
         property: "og:description",
         content:
@@ -65,7 +67,10 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "katwa.link — Beautiful Templates, Filipino Style" },
+      {
+        name: "twitter:title",
+        content: "katwa.link — Beautiful Templates, Filipino Style",
+      },
       {
         name: "twitter:description",
         content: "Built for Filipino creators, sellers and businesses.",
@@ -98,7 +103,6 @@ function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
     navigate({ to: "/claim/$username", params: { username: slug } });
   };
 
-
   const pad = size === "lg" ? "p-2" : "p-1.5";
 
   return (
@@ -106,7 +110,9 @@ function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
       onSubmit={submit}
       className={`flex items-center gap-2 rounded-xl border border-border bg-background/80 backdrop-blur ${pad}`}
     >
-      <span className="pl-2 text-sm text-muted-foreground whitespace-nowrap">katwa.link/</span>
+      <span className="pl-2 text-sm text-muted-foreground whitespace-nowrap">
+        katwa.link/
+      </span>
       <input
         value={name}
         onChange={(e) => setName(e.target.value)}
@@ -126,7 +132,6 @@ function ClaimInline({ size = "md" }: { size?: "md" | "lg" }) {
 function Nav() {
   const { slug } = useContext(ClaimNameCtx);
   return (
-
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Logo />
@@ -148,7 +153,6 @@ function Nav() {
           <Link
             to="/claim/$username"
             params={{ username: slug }}
-
             className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
           >
             Claim your link
@@ -159,7 +163,6 @@ function Nav() {
   );
 }
 
-/* ---------- Phone mockup primitives ---------- */
 export function PhoneFrame({
   children,
   className = "",
@@ -178,8 +181,6 @@ export function PhoneFrame({
     </div>
   );
 }
-
-/* ---------- Sections ---------- */
 
 const templates = [
   {
@@ -247,7 +248,6 @@ const templates = [
   },
 ];
 
-
 function Hero() {
   return (
     <section className="relative overflow-hidden">
@@ -258,8 +258,8 @@ function Hero() {
       <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:py-24">
         <div>
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Built for the Philippine
-            market 🇵🇭
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />{" "}
+            Built for the Philippine market 🇵🇭
           </div>
           <h1 className="mt-6 text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
             One Link.
@@ -302,6 +302,8 @@ function Hero() {
 }
 
 function TemplatesSection() {
+  const { slug } = useContext(ClaimNameCtx);
+
   return (
     <section id="templates" className="relative border-t border-border/50 py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -319,7 +321,7 @@ function TemplatesSection() {
             <Link
               key={name}
               to="/claim/$username"
-              params={{ username: "yourname" }}
+              params={{ username: slug }}
               search={{ template: name.toLowerCase().replace(/\s+/g, "-") }}
               className="group flex flex-col items-center"
             >
@@ -327,7 +329,9 @@ function TemplatesSection() {
                 <Comp />
               </div>
               <div className="mt-5 text-center">
-                <div className={`text-base font-semibold tracking-wider ${color}`}>{name}</div>
+                <div className={`text-base font-semibold tracking-wider ${color}`}>
+                  {name}
+                </div>
                 <p className="mt-1 max-w-[16rem] text-xs text-muted-foreground">{desc}</p>
               </div>
             </Link>
@@ -383,12 +387,7 @@ function FeaturesSection() {
 }
 
 function DashboardSection() {
-  const stats: Array<[string, string, string | null]> = [
-    ["Profile Views", "—", null],
-    ["Link Clicks", "—", null],
-    ["Click Through Rate", "—", null],
-    ["Top Link", "—", null],
-  ];
+  const { slug } = useContext(ClaimNameCtx);
 
   return (
     <section id="dashboard" className="relative border-t border-border/50 py-20">
@@ -416,11 +415,13 @@ function DashboardSection() {
                   const Icon = I as typeof BarChart3;
                   return (
                     <div
-                      key={n as string}
-                      className={`flex items-center gap-2 rounded-lg px-3 py-2 ${active ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                      key={n}
+                      className={`flex items-center gap-2 rounded-lg px-3 py-2 ${
+                        active ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"
+                      }`}
                     >
                       <Icon className="h-4 w-4" />
-                      <span>{n as string}</span>
+                      <span>{n}</span>
                     </div>
                   );
                 })}
@@ -435,52 +436,18 @@ function DashboardSection() {
                 </div>
               </div>
 
-              <div className="mt-4 rounded-lg border border-dashed border-border bg-card/40 p-4 text-center text-sm text-muted-foreground">
-                Publish your page and share it to start collecting clicks.
-              </div>
-
-              <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {stats.map(([label, val, sub]) => (
-                  <div key={label} className="rounded-xl border border-border bg-card/50 p-4">
-                    <div className="text-xs text-muted-foreground">{label}</div>
-                    <div className="mt-1 truncate text-2xl font-semibold tracking-tight">{val}</div>
-                    {sub && <div className="mt-1 text-xs text-muted-foreground">{sub}</div>}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                <div className="rounded-xl border border-border bg-card/50 p-5">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-semibold">Top Links</h4>
-                    <span className="text-xs text-muted-foreground">Clicks</span>
-                  </div>
-                  <ul className="mt-3 space-y-3 text-sm">
-                    <li className="text-xs text-muted-foreground">No link clicks yet.</li>
-                  </ul>
-                </div>
-
-                <div className="rounded-xl border border-border bg-card/50 p-5">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-semibold">Views Over Time</h4>
-                    <span className="text-xs text-muted-foreground">Last 7 days</span>
-                  </div>
-                  <svg viewBox="0 0 300 120" className="mt-3 h-32 w-full">
-                    <defs>
-                      <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
-                        <stop offset="0%" stopColor="oklch(0.62 0.22 265)" stopOpacity="0.5" />
-                        <stop offset="100%" stopColor="oklch(0.62 0.22 265)" stopOpacity="0" />
-                      </linearGradient>
-                    </defs>
-                    <path
-                      d="M0,90 C40,80 60,70 90,65 C130,58 160,55 190,40 C220,28 250,25 300,15"
-                      fill="none"
-                      stroke="oklch(0.62 0.22 265)"
-                      strokeWidth="2"
-                      strokeOpacity="0.3"
-                    />
-                  </svg>
-                </div>
+              <div className="mt-4 rounded-lg border border-dashed border-border bg-card/40 p-8 text-center">
+                <BarChart3 className="mx-auto h-10 w-10 text-muted-foreground" />
+                <p className="mt-3 text-sm text-muted-foreground">
+                  Publish your page and share it to start collecting clicks.
+                </p>
+                <Link
+                  to="/claim/$username"
+                  params={{ username: slug }}
+                  className="mt-4 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
+                >
+                  Claim your page
+                </Link>
               </div>
             </div>
           </div>
@@ -520,31 +487,63 @@ function Footer() {
           © 2026 katwa.link — Built with ❤️ in the Philippines.
         </p>
         <div className="flex gap-4 text-muted-foreground">
-          <Facebook className="h-4 w-4" />
-          <Instagram className="h-4 w-4" />
-          <Music2 className="h-4 w-4" />
-          <Youtube className="h-4 w-4" />
+          <a
+            href="https://facebook.com/katwalink"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-foreground transition-colors"
+          >
+            <Facebook className="h-4 w-4" />
+          </a>
+          <a
+            href="https://instagram.com/katwalink"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-foreground transition-colors"
+          >
+            <Instagram className="h-4 w-4" />
+          </a>
+          <a
+            href="https://tiktok.com/@katwalink"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-foreground transition-colors"
+          >
+            <Music2 className="h-4 w-4" />
+          </a>
+          <a
+            href="https://youtube.com/@katwalink"
+            target="_blank"
+            rel="noreferrer"
+            className="hover:text-foreground transition-colors"
+          >
+            <Youtube className="h-4 w-4" />
+          </a>
         </div>
       </div>
     </footer>
   );
 }
 
-// suppress unused imports warning for icons kept for future use
+// Keep icon import for future use.
 void getIcon;
 
 function Landing() {
+  const [username, setUsername] = useState("");
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Nav />
-      <main>
-        <Hero />
-        <TemplatesSection />
-        <FeaturesSection />
-        <DashboardSection />
-        <CTASection />
-      </main>
-      <Footer />
-    </div>
+    <ClaimNameCtx.Provider value={{ name: username, setName: setUsername, slug: toSlug(username) }}>
+      <div className="min-h-screen bg-background text-foreground">
+        <Nav />
+        <main>
+          <Hero />
+          <TemplatesSection />
+          <FeaturesSection />
+          <DashboardSection />
+          <CTASection />
+        </main>
+        <Footer />
+      </div>
+    </ClaimNameCtx.Provider>
   );
 }

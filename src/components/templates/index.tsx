@@ -1,7 +1,6 @@
 import PinoyFitnessTemplate, { type TemplateProps } from "./PinoyFitnessTemplate";
 import IslaCreatorTemplate from "./IslaCreatorTemplate";
 import ClassicPinoyTemplate from "./ClassicPinoyTemplate";
-// SellerTemplate replaced by LikhaMarketTemplate
 import CreatorTemplate from "./CreatorTemplate";
 import BusinessTemplate from "./BusinessTemplate";
 import ResortTemplate from "./ResortTemplate";
