@@ -24,8 +24,6 @@ import {
   Coffee,
   Linkedin,
   Twitch,
-  Spotify,
-  Tiktok,
   ShoppingCart,
   Zap,
   Wallet,
