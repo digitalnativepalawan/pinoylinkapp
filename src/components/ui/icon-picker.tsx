@@ -29,18 +29,21 @@ export function IconPicker({ value, onChange, className }: IconPickerProps) {
           {getIcon(value)}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="max-h-[70vh] overflow-y-auto p-1 w-72" align="end">
+      <DropdownMenuContent
+        className="max-h-[70vh] overflow-y-auto p-1 w-72 bg-popover text-popover-foreground shadow-lg border border-popover"
+        align="end"
+      >
         {ICON_OPTIONS.map((o) => {
           const selected = value === o.name;
           return (
             <DropdownMenuItem
               key={o.name}
-              className="flex items-center gap-3 px-2 py-1.5 text-sm text-left cursor-pointer"
+              className="flex items-center gap-3 px-2 py-1.5 text-sm text-left cursor-pointer [&_svg]:shrink-0"
               onClick={() => onChange(o.name)}
               value={selected ? "true" : undefined}
             >
               <IconPickIcon name={o.name} />
-              <span className="truncate">{o.label}</span>
+              <span className="truncate text-foreground">{o.label}</span>
               {selected && (
                 <Check className="ml-auto h-4 w-4 shrink-0 text-accent-foreground" />
               )}
@@ -54,5 +57,5 @@ export function IconPicker({ value, onChange, className }: IconPickerProps) {
 
 function IconPickIcon({ name }: { name: IconName }) {
   const Icon = getIcon(name);
-  return <Icon className="h-4 w-4 shrink-0" />;
+  return <Icon className="h-4 w-4 shrink-0 text-foreground" />;
 }
