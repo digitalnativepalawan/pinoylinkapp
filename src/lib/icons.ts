@@ -24,6 +24,8 @@ import {
   Coffee,
   Linkedin,
   Twitch,
+  Twitter,
+  PiggyBank,
   ShoppingCart,
   Zap,
   Wallet,
