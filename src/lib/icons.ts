@@ -89,6 +89,8 @@ export const ICONS = {
   Coffee,
   Linkedin,
   Twitch,
+  Twitter,
+  PiggyBank,
   // Brand icons removed from lucide-react 0.575 — map to closest equivalents
   Spotify: Headphones,
   Tiktok: Music2,
