@@ -26,7 +26,7 @@ export function IconPicker({ value, onChange, className }: IconPickerProps) {
           )}
           aria-label="Choose icon"
         >
-          {getIcon(value)}
+          <IconPickIcon name={value} />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -40,7 +40,6 @@ export function IconPicker({ value, onChange, className }: IconPickerProps) {
               key={o.name}
               className="flex items-center gap-3 px-2 py-1.5 text-sm text-left cursor-pointer [&_svg]:shrink-0"
               onClick={() => onChange(o.name)}
-              value={selected ? "true" : undefined}
             >
               <IconPickIcon name={o.name} />
               <span className="truncate text-foreground">{o.label}</span>

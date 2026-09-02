@@ -404,27 +404,26 @@ function DashboardSection() {
             <aside className="hidden border-r border-border bg-card/50 p-4 lg:block">
               <Logo />
               <nav className="mt-6 space-y-1 text-sm">
-                {[
-                  ["Overview", BarChart3, true],
-                  ["Links", Link2, false],
-                  ["Appearance", Sparkles, false],
-                  ["Analytics", BarChart3, false],
-                  ["QR Code", QrCode, false],
-                  ["Settings", Briefcase, false],
-                ].map(([n, I, active]) => {
-                  const Icon = I as typeof BarChart3;
-                  return (
-                    <div
-                      key={n}
-                      className={`flex items-center gap-2 rounded-lg px-3 py-2 ${
-                        active ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span>{n}</span>
-                    </div>
-                  );
-                })}
+                {(
+                  [
+                    ["Overview", BarChart3, true],
+                    ["Links", Link2, false],
+                    ["Appearance", Sparkles, false],
+                    ["Analytics", BarChart3, false],
+                    ["QR Code", QrCode, false],
+                    ["Settings", Briefcase, false],
+                  ] as [string, typeof BarChart3, boolean][]
+                ).map(([n, Icon, active]) => (
+                  <div
+                    key={n}
+                    className={`flex items-center gap-2 rounded-lg px-3 py-2 ${
+                      active ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{n}</span>
+                  </div>
+                ))}
               </nav>
             </aside>
 
