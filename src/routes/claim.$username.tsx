@@ -17,9 +17,11 @@ import {
   Upload,
   GripVertical,
 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { getIcon, ICON_OPTIONS, type IconName } from "@/lib/icons";
+import { IconPicker } from "@/components/ui/icon-picker";
 import { TEMPLATES, TemplatePhonePreview, renderTemplate } from "@/components/templates";
 
 type Profile = {
@@ -610,19 +612,11 @@ function ClaimPage() {
                     >
                       <GripVertical className="h-4 w-4" />
                     </span>
-                    <select
+                    <IconPicker
                       value={(l.icon ?? "Globe") as IconName}
-                      onChange={(e) => patchLink(l.id, { icon: e.target.value })}
-                      className="h-9 w-9 appearance-none rounded-lg bg-muted text-sm text-foreground"
-                      style={{ backgroundImage: "none" }}
-                      aria-label="Icon"
-                    >
-                      {ICON_OPTIONS.map((o) => (
-                        <option key={o.name} value={o.name}>
-                          {o.label}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={(v) => patchLink(l.id, { icon: v })}
+                      className="h-9 w-9"
+                    />
                     <div className="-ml-12 pointer-events-none grid h-9 w-9 place-items-center">
                       <Icon className={`h-4 w-4 ${l.color || "text-zinc-500"}`} />
                     </div>
