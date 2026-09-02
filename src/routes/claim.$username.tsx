@@ -318,6 +318,14 @@ function ClaimPage() {
 
   const handlePublish = async () => {
     if (!profile) return;
+    if (links.length === 0) {
+      setError("Add at least one link before publishing.");
+      return;
+    }
+    if (links.some((l) => !l.url || !l.url.trim() || l.url.trim() === "https://")) {
+      setError("Every link needs a real URL before you publish.");
+      return;
+    }
     const { error: pubErr } = await supabase
       .from("profiles")
       .update({ published: true })
@@ -605,7 +613,7 @@ function ClaimPage() {
                     <select
                       value={(l.icon ?? "Globe") as IconName}
                       onChange={(e) => patchLink(l.id, { icon: e.target.value })}
-                      className="h-9 w-9 appearance-none rounded-lg bg-muted text-transparent"
+                      className="h-9 w-9 appearance-none rounded-lg bg-muted text-sm text-foreground"
                       style={{ backgroundImage: "none" }}
                       aria-label="Icon"
                     >
